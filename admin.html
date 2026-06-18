@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hospital Link — 관리자</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:#F2F3F5;color:#1A1A1A;font-size:14px}
+:root{--pink:#FF5A7A;--teal:#0EA5A4;--ink:#1A1A1A;--border:#E5E7EB;--bg:#F2F3F5;--side:220px;--prev:320px;--hdr:56px;--ph-bg:#E5E7EB}
+
+/* ── 헤더 ── */
+.hdr{position:fixed;top:0;left:0;right:0;height:var(--hdr);background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:16px;z-index:100}
+.hdr-logo{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.logo-mark{width:28px;height:28px;background:linear-gradient(135deg,var(--teal),var(--pink));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff}
+.logo-text{font-size:15px;font-weight:800;color:var(--ink)}
+.hdr-div{width:1px;height:20px;background:var(--border)}
+.hdr-clinic{font-size:14px;font-weight:700;color:#555;cursor:pointer}
+.hdr-pub{font-size:12px;color:#22C55E;display:flex;align-items:center;gap:5px;margin-left:auto}
+.hdr-pub .dot{width:6px;height:6px;border-radius:50%;background:#22C55E}
+.hdr-r{display:flex;gap:8px;margin-left:12px}
+.btn{padding:8px 16px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;border:none;white-space:nowrap}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:#555}
+.btn-ghost:hover{background:#F7F7F7}
+.btn-save{background:var(--pink);color:#fff}
+.btn-save:hover{background:#E82D67}
+.btn-link{background:#F2F3F5;color:var(--ink)}
+
+/* ── 레이아웃 ── */
+.layout{display:flex;margin-top:var(--hdr);height:calc(100vh - var(--hdr))}
+
+/* ── 사이드바 ── */
+.sidebar{width:var(--side);flex-shrink:0;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
+.nav-group{padding:20px 12px 6px;font-size:10px;font-weight:800;color:#AAA;letter-spacing:.06em;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:9px;padding:10px 14px;border-radius:9px;margin:1px 8px;cursor:pointer;font-size:13.5px;font-weight:500;color:#555;transition:all .12s}
+.nav-item:hover{background:#F7F7F7;color:var(--ink)}
+.nav-item.active{background:#E6F7F6;color:var(--teal);font-weight:700}
+.nav-item .ni{font-size:15px;width:20px;text-align:center}
+.nav-bottom{margin-top:auto;padding:12px 8px;border-top:1px solid var(--border)}
+
+/* ── 콘텐츠 ── */
+.content{flex:1;overflow-y:auto;padding:24px;min-width:0}
+.sec{display:none}
+.sec.active{display:block}
+.sec-title{font-size:19px;font-weight:800;margin-bottom:4px}
+.sec-desc{font-size:13px;color:#888;margin-bottom:22px}
+
+/* 카드 */
+.card{background:#fff;border-radius:14px;padding:22px;margin-bottom:14px;border:1px solid var(--border)}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.card-title{font-size:14px;font-weight:700}
+.card-hint{font-size:12px;color:#AAA}
+
+/* 입력 공통 */
+.field{margin-bottom:16px}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:11.5px;font-weight:700;color:#666;margin-bottom:6px}
+.field input,.field textarea,.field select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:9px;font-size:13.5px;font-family:inherit;color:var(--ink);background:#fff;outline:none;transition:border .15s}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--teal)}
+.field textarea{resize:vertical;min-height:80px;line-height:1.6}
+.field-row{display:flex;gap:10px}
+.field-row .field{flex:1}
+.hint{font-size:11px;color:#AAA;margin-top:5px}
+.required{color:var(--pink)}
+
+/* 브랜드 컬러 */
+.color-picker-wrap{display:flex;gap:10px;align-items:center}
+.color-picker-wrap input[type=color]{width:48px;height:38px;border:1px solid var(--border);border-radius:9px;padding:3px;cursor:pointer;background:#fff;flex-shrink:0}
+.color-swatches{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center}
+.color-swatch{width:30px;height:30px;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:border .15s;flex-shrink:0}
+.color-swatch:hover{border-color:var(--ink)}
+.color-swatch.active{border-color:var(--ink)}
+.color-preview-bar{height:6px;border-radius:3px;margin-top:12px;transition:background .2s}
+
+/* 이미지 그리드 */
+.img-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.img-slot{aspect-ratio:16/11;border:2px dashed #DDD;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:#BBB;font-size:12px;font-weight:600;transition:border .15s;position:relative;overflow:hidden;background:#FAFAFA}
+.img-slot:hover{border-color:var(--pink);color:var(--pink)}
+.img-slot .add-ic{font-size:22px}
+.img-slot.filled{border-style:solid;border-color:#DDD;background:var(--ph-bg)}
+.img-slot.filled .slot-label{position:absolute;bottom:6px;left:6px;background:rgba(0,0,0,.45);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px}
+.img-slot .del-slot{display:none;position:absolute;top:5px;right:5px;width:20px;height:20px;background:rgba(0,0,0,.5);color:#fff;border-radius:50%;font-size:11px;align-items:center;justify-content:center;cursor:pointer}
+.img-slot.filled:hover .del-slot{display:flex}
+
+/* 토글 */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #F4F4F4}
+.toggle-row:last-child{border-bottom:none}
+.toggle-l{display:flex;flex-direction:column;gap:2px}
+.toggle-name{font-size:13.5px;font-weight:600}
+.toggle-sub{font-size:11.5px;color:#AAA}
+.toggle{position:relative;width:42px;height:24px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:#DDD;border-radius:24px;cursor:pointer;transition:background .2s}
+.toggle-slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .2s}
+.toggle input:checked+.toggle-slider{background:var(--pink)}
+.toggle input:checked+.toggle-slider:before{transform:translateX(18px)}
+.toggle input:disabled+.toggle-slider{opacity:.5;cursor:not-allowed}
+
+/* 시술 카드 */
+.prod-list{display:flex;flex-direction:column;gap:10px}
+.prod-card{display:flex;align-items:center;gap:14px;padding:14px;border:1px solid var(--border);border-radius:12px;background:#FAFAFA}
+.prod-thumb{width:56px;height:56px;border-radius:10px;border:2px dashed #DDD;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;cursor:pointer;background:#fff}
+.prod-thumb.has-img{border-style:solid;background:var(--ph-bg)}
+.prod-fields{flex:1;display:grid;grid-template-columns:1.7fr 1fr 1fr 1fr;gap:12px;align-items:end}
+.prod-fields .field{margin-bottom:0;min-width:0}
+.prod-fields .field label{font-size:10.5px}
+.prod-disc-out{background:#FFF0F4;color:var(--pink);font-size:14px;font-weight:800;padding:10px 14px;border-radius:9px;border:1px solid #FFD6E2;text-align:center;flex-shrink:0;min-width:56px}
+.prod-del{width:30px;height:30px;border-radius:8px;background:#F2F3F5;border:none;cursor:pointer;font-size:18px;color:#AAA;flex-shrink:0;line-height:1}
+.prod-del:hover{background:#FFE5E5;color:#EF4444}
+.add-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:12px;border:1.5px dashed #DDD;border-radius:12px;background:transparent;font-size:13px;font-weight:700;color:#999;cursor:pointer;transition:all .15s}
+.add-btn:hover{border-color:var(--pink);color:var(--pink);background:#FFF5F8}
+
+/* 후기 채널 카드 */
+.review-ch-card{display:flex;align-items:center;gap:14px;padding:16px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px}
+.review-ch-ic{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0}
+.review-ch-name{font-size:14px;font-weight:700;margin-bottom:8px}
+.review-ch-fields{flex:1;display:grid;grid-template-columns:100px 1fr 1fr;gap:12px;align-items:end}
+.review-ch-fields .field{margin-bottom:0}
+.review-ch-fields .field label{font-size:10.5px}
+
+/* 후기 카드 목록 */
+.rev-item{display:flex;align-items:flex-start;gap:10px;padding:13px;border:1px solid var(--border);border-radius:12px;background:#FAFAFA;margin-bottom:8px}
+.rev-item-fields{flex:1;display:grid;grid-template-columns:100px 96px 100px 1fr;gap:10px;align-items:start}
+.rev-item-fields .field{margin-bottom:0}
+.rev-item-fields .field label{font-size:10.5px}
+
+/* 의사 */
+.doc-card{border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;background:#fff}
+.doc-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.doc-card-num{font-size:12px;font-weight:800;color:#AAA;letter-spacing:.04em;text-transform:uppercase}
+.doc-card-name{font-size:14px;font-weight:700;color:var(--ink)}
+.doc-card-del{width:28px;height:28px;border-radius:8px;background:#F2F3F5;border:none;cursor:pointer;font-size:17px;color:#AAA;display:flex;align-items:center;justify-content:center;line-height:1}
+.doc-card-del:hover{background:#FFE5E5;color:#EF4444}
+.doc-layout{display:grid;grid-template-columns:100px 1fr;gap:18px;align-items:start}
+.doc-photo-slot{width:100px;height:100px;border:2px dashed #DDD;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:#BBB;font-size:11px;font-weight:600;text-align:center}
+.doc-photo-slot .ph-ic{font-size:28px}
+.doc-photo-slot.filled{border-style:solid;background:var(--ph-bg)}
+
+/* 전화번호 */
+.phone-row{display:flex;gap:10px;align-items:end;margin-bottom:10px}
+.phone-row .field{margin-bottom:0}
+.phone-tag-input{width:140px}
+.phone-num-input{flex:1}
+.phone-del{width:34px;height:38px;border-radius:8px;background:#F2F3F5;border:none;cursor:pointer;font-size:15px;color:#AAA;flex-shrink:0}
+.phone-del:hover{background:#FFE5E5;color:#EF4444}
+
+/* 언어 */
+.lang-card{padding:6px 0}
+
+/* 채널 */
+.channel-row{display:flex;align-items:center;gap:14px;padding:16px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px}
+.channel-ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.channel-name{font-size:13.5px;font-weight:700;width:90px;flex-shrink:0}
+.channel-field{flex:1}
+.channel-field input{margin:0}
+.channel-badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;color:#fff}
+
+/* ── 미리보기 패널 ── */
+.preview-panel{width:var(--prev);flex-shrink:0;background:#F2F3F5;border-left:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:16px 12px}
+.preview-hdr{width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.preview-hdr-label{font-size:12px;font-weight:700;color:#888}
+.preview-hdr a{font-size:12px;color:var(--pink);text-decoration:none;font-weight:600}
+.phone-outer{width:240px;height:514px;border:10px solid #1A1A1A;border-radius:36px;overflow:hidden;position:relative;background:#1A1A1A;flex-shrink:0;box-shadow:0 20px 50px rgba(0,0,0,.2)}
+.phone-outer::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:80px;height:6px;background:#1A1A1A;border-radius:0 0 8px 8px;z-index:10}
+.phone-outer iframe{width:390px;height:844px;border:none;transform:scale(0.5692);transform-origin:top left;pointer-events:auto}
+.preview-url{margin-top:12px;font-size:11px;color:#AAA;background:#fff;border:1px solid var(--border);border-radius:20px;padding:5px 12px;display:flex;align-items:center;gap:6px}
+.url-dot{width:6px;height:6px;border-radius:50%;background:#22C55E}
+
+/* 토스트 */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#1A1A1A;color:#fff;font-size:13px;font-weight:600;padding:12px 20px;border-radius:24px;z-index:200;opacity:0;transition:opacity .25s;pointer-events:none;display:flex;align-items:center;gap:8px}
+.toast.show{opacity:1}
+
+/* 섹션 구분선 */
+.divider{height:1px;background:var(--border);margin:18px 0}
+
+/* 상태 배지 */
+.status-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px}
+.sb-active{background:#DCFCE7;color:#16A34A}
+.sb-draft{background:#FEF3C7;color:#D97706}
+
+/* 통계 공통 */
+.stat-period{display:flex;align-items:center;gap:8px;margin-bottom:24px}
+.stat-period select{padding:7px 12px;border:1px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;background:#fff;color:var(--ink);outline:none}
+.chart-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px}
+.chart-title{font-size:13px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.chart-badge{font-size:11px;font-weight:600;color:#AAA}
+.pro-lock{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:800;background:#FFF0F4;color:var(--pink);padding:2px 8px;border-radius:20px;margin-left:6px}
+
+/* 섹션 헤더 */
+.sstat{margin-bottom:24px}
+.sstat-head{display:flex;align-items:baseline;gap:10px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--ink)}
+.sstat-num{font-size:10px;font-weight:900;color:var(--pink);letter-spacing:.08em;flex-shrink:0}
+.sstat-title{font-size:16px;font-weight:800}
+.sstat-sub{font-size:12px;color:#AAA;margin-left:auto}
+
+/* 섹션 1: 총 방문 */
+.visit-top{display:grid;grid-template-columns:180px 1fr;gap:14px;margin-bottom:14px}
+.big-kpi{background:#fff;border:1px solid var(--border);border-radius:14px;padding:22px;display:flex;flex-direction:column;justify-content:center}
+.big-kpi-label{font-size:11.5px;font-weight:700;color:#888;margin-bottom:10px}
+.big-kpi-val{font-size:36px;font-weight:900;color:var(--ink);line-height:1}
+.big-kpi-unit{font-size:14px;font-weight:600;color:#AAA;margin-top:4px}
+.big-kpi-diff{font-size:12px;margin-top:10px;display:flex;align-items:center;gap:4px}
+.diff-up{color:#16A34A;font-weight:700}.diff-down{color:#EF4444;font-weight:700}.diff-neu{color:#AAA}
+.line-chart{width:100%;height:110px}
+.line-chart-labels{display:flex;justify-content:space-between;margin-top:5px}
+.line-chart-labels span{font-size:10px;color:#CCC}
+.visit-mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mini-kpi{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px}
+.mini-kpi-label{font-size:11px;font-weight:700;color:#888;margin-bottom:6px}
+.mini-kpi-val{font-size:20px;font-weight:800;color:var(--ink)}
+.mini-kpi-sub{font-size:11px;color:#AAA;margin-top:4px}
+
+/* 섹션 2: 상담 버튼 클릭 */
+.consult-grid{display:grid;grid-template-columns:200px 1fr;gap:14px}
+.cvr-big{background:#fff;border:1px solid var(--border);border-radius:14px;padding:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.cvr-ring-wrap{position:relative;width:100px;height:100px;margin:0 auto 12px}
+.cvr-ring{transform:rotate(-90deg)}
+.cvr-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.cvr-pct{font-size:22px;font-weight:900;color:var(--ink)}
+.cvr-label{font-size:10px;font-weight:700;color:#AAA}
+.cvr-meta{font-size:12px;color:#888;line-height:1.7}
+.ch-list{display:flex;flex-direction:column;gap:8px}
+.ch-row{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#fff;border:1px solid var(--border);border-radius:12px}
+.ch-ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;flex-shrink:0}
+.ch-name{font-size:13px;font-weight:700;width:96px;flex-shrink:0}
+.ch-track-wrap{flex:1}
+.ch-bar-track{height:7px;background:#F2F3F5;border-radius:4px;overflow:hidden;margin-bottom:4px}
+.ch-bar-fill{height:100%;border-radius:4px}
+.ch-nums{display:flex;justify-content:space-between;font-size:11px;color:#888}
+.ch-cnt{font-size:16px;font-weight:800;color:var(--ink);width:44px;text-align:right;flex-shrink:0}
+.ch-pct{font-size:11px;color:#AAA;width:36px;text-align:right;flex-shrink:0}
+
+/* 섹션 3: 상세 클릭 */
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tab-reach-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #F4F4F4}
+.tab-reach-row:last-child{border-bottom:none}
+.tab-reach-name{font-size:12.5px;font-weight:700;width:80px;flex-shrink:0}
+.tab-reach-track{flex:1;height:8px;background:#F2F3F5;border-radius:4px;overflow:hidden}
+.tab-reach-fill{height:100%;border-radius:4px;background:var(--pink)}
+.tab-reach-pct{font-size:12px;font-weight:700;width:36px;text-align:right;flex-shrink:0}
+.tab-reach-cvr{font-size:11px;color:#16A34A;font-weight:700;width:60px;text-align:right;flex-shrink:0}
+.treat-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F4F4F4}
+.treat-row:last-child{border-bottom:none}
+.treat-rank{width:22px;height:22px;border-radius:7px;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.r1{background:#FFF0F4;color:var(--pink)}.r2{background:#FFF8E7;color:#D97706}.r3{background:#F0FFF4;color:#16A34A}.rn{background:#F2F3F5;color:#AAA}
+.treat-name{flex:1;font-size:12.5px;font-weight:600}
+.treat-click{font-size:12px;color:#888;width:54px;text-align:right;flex-shrink:0}
+.treat-cvr{font-size:11px;font-weight:700;width:44px;text-align:right;flex-shrink:0}
+.insight-box{background:#FFF8F0;border:1px solid #FFD8A8;border-radius:10px;padding:12px 14px;font-size:12px;color:#555;line-height:1.7;margin-top:12px}
+.insight-box b{color:#D97706}
+
+/* 섹션 4: 방문 분포 */
+.dist-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.lang-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.lang-row:last-child{margin-bottom:0}
+.lang-flag{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.lang-name{font-size:12px;font-weight:700;color:#555;width:66px;flex-shrink:0}
+.lang-bar-track{flex:1;height:6px;background:#F2F3F5;border-radius:3px;overflow:hidden}
+.lang-bar-fill{height:100%;border-radius:3px;background:var(--pink)}
+.lang-pct{font-size:12px;font-weight:700;width:32px;text-align:right;flex-shrink:0}
+.time-bar-wrap{display:flex;flex-direction:column;gap:8px}
+.time-row{display:flex;align-items:center;gap:8px}
+.time-label{font-size:11px;font-weight:700;color:#888;width:64px;flex-shrink:0}
+.time-track{flex:1;height:22px;background:#F2F3F5;border-radius:6px;overflow:hidden;position:relative}
+.time-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#FF5A7A,#FF8FA5);display:flex;align-items:center;padding-left:8px}
+.time-fill span{font-size:11px;font-weight:700;color:#fff;white-space:nowrap}
+.src-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.src-row:last-child{margin-bottom:0}
+.src-ic{font-size:16px;width:22px;text-align:center;flex-shrink:0}
+.src-name{font-size:12px;font-weight:700;color:#555;width:78px;flex-shrink:0}
+.src-bar-track{flex:1;height:6px;background:#F2F3F5;border-radius:3px;overflow:hidden}
+.src-bar-fill{height:100%;border-radius:3px}
+.src-pct{font-size:12px;font-weight:700;width:32px;text-align:right;flex-shrink:0}
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-L7F8Q3CZMP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-L7F8Q3CZMP');
+</script>
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "x8ctilixkq");
+</script>
+</head>
+<body>
+
+<!-- 헤더 -->
+<header class="hdr">
+  <div class="hdr-logo">
+    <div class="logo-mark">H</div>
+    <span class="logo-text">Hospital Link</span>
+  </div>
+  <div class="hdr-div"></div>
+  <div class="hdr-clinic">Seoul Skin Lab ▾</div>
+  <span class="status-badge sb-active">● 발행 중</span>
+  <div class="hdr-pub" style="margin-left:auto">
+    <span class="dot"></span>방금 저장됨
+  </div>
+  <div class="hdr-r">
+    <button class="btn btn-link" onclick="copyLink()">🔗 링크 복사</button>
+    <button class="btn btn-ghost" onclick="window.open('demo-landing.html','_blank')">미리보기 ↗</button>
+    <button class="btn btn-save" onclick="save()">저장하기</button>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- 사이드바 -->
+  <nav class="sidebar">
+    <div class="nav-group">페이지 편집</div>
+    <div class="nav-item active" data-sec="basic"    onclick="go(this)"><span class="ni">🏥</span> 기본 정보</div>
+    <div class="nav-item"        data-sec="price"    onclick="go(this)"><span class="ni">💰</span> 시술 / 가격</div>
+    <div class="nav-item"        data-sec="review"   onclick="go(this)"><span class="ni">⭐</span> 후기</div>
+    <div class="nav-item"        data-sec="doctor"   onclick="go(this)"><span class="ni">👩‍⚕️</span> 의료진</div>
+    <div class="nav-item"        data-sec="info"     onclick="go(this)"><span class="ni">📍</span> 클리닉 정보</div>
+    <div class="nav-item"        data-sec="lang"     onclick="go(this)"><span class="ni">🌐</span> 언어 설정</div>
+    <div class="nav-item"        data-sec="channel"  onclick="go(this)"><span class="ni">💬</span> 상담 채널</div>
+    <div class="nav-item"        data-sec="notice"   onclick="go(this)"><span class="ni">📢</span> 공지사항</div>
+    <div class="nav-bottom">
+      <div class="nav-item"      data-sec="stats"    onclick="go(this)"><span class="ni">📊</span> 통계</div>
+    </div>
+  </nav>
+
+  <!-- 콘텐츠 -->
+  <main class="content">
+
+    <!-- ① 기본 정보 -->
+    <div class="sec active" id="sec-basic">
+      <div class="sec-title">기본 정보</div>
+      <div class="sec-desc">병원 이름, 이미지, 위치를 설정합니다.</div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">병원 이미지</span>
+          <span class="card-hint">최대 6장 · 권장 비율 16:11</span>
+        </div>
+        <div class="img-grid">
+          <div class="img-slot filled" onclick="imgClick(this)">
+            <div class="slot-label">대표</div>
+            <div class="del-slot" onclick="delSlot(event,this)">×</div>
+          </div>
+          <div class="img-slot filled" onclick="imgClick(this)">
+            <div class="slot-label">2</div>
+            <div class="del-slot" onclick="delSlot(event,this)">×</div>
+          </div>
+          <div class="img-slot filled" onclick="imgClick(this)">
+            <div class="slot-label">3</div>
+            <div class="del-slot" onclick="delSlot(event,this)">×</div>
+          </div>
+          <div class="img-slot filled" onclick="imgClick(this)">
+            <div class="slot-label">4</div>
+            <div class="del-slot" onclick="delSlot(event,this)">×</div>
+          </div>
+          <div class="img-slot filled" onclick="imgClick(this)">
+            <div class="slot-label">5</div>
+            <div class="del-slot" onclick="delSlot(event,this)">×</div>
+          </div>
+          <div class="img-slot" onclick="imgClick(this)"><span class="add-ic">＋</span>이미지 추가</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px">병원 기본 정보</div>
+        <div class="field">
+          <label>병원명 <span class="required">*</span></label>
+          <input type="text" id="f-name" value="Seoul Skin Lab">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>지하철역 <span class="required">*</span></label>
+            <input type="text" id="f-station" value="강남역" placeholder="예: 강남역">
+          </div>
+          <div class="field">
+            <label>출구 번호</label>
+            <input type="text" id="f-exit" value="3번 출구" placeholder="예: 3번 출구">
+          </div>
+        </div>
+        <div class="field">
+          <label>상세 주소 <span class="required">*</span></label>
+          <input type="text" id="f-address" value="서울 강남구 도산대로 153, 9F">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">헤더 평점 표시</span>
+          <span class="card-hint">직접 입력 → Phase 2에서 Google 자동 연동</span>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>별점 (0–5)</label>
+            <input type="number" id="f-rating" value="4.9" min="0" max="5" step="0.1">
+          </div>
+          <div class="field">
+            <label>후기 총 개수</label>
+            <input type="number" id="f-reviewcount" value="1847">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px">브랜드 컬러</div>
+        <div class="field">
+          <label>메인 컬러 <span class="required">*</span></label>
+          <div class="color-picker-wrap">
+            <input type="color" id="brand-color-picker" value="#C29F53" oninput="onColorPickerChange(this.value)">
+            <input type="text" id="brand-color-hex" value="#C29F53" placeholder="#C29F53" maxlength="7" oninput="onColorHexChange(this.value)">
+          </div>
+          <div class="hint">홈페이지의 강조색(별점, 할인율, 탭, 버튼 등)에 반영됩니다.</div>
+        </div>
+        <div class="color-swatches">
+          <span style="font-size:11px;font-weight:700;color:#AAA;margin-right:2px">추천</span>
+          <div class="color-swatch active" style="background:#C29F53" title="골드 (기본)" onclick="applyColor('#C29F53')"></div>
+          <div class="color-swatch" style="background:#B08850" title="다크 골드" onclick="applyColor('#B08850')"></div>
+          <div class="color-swatch" style="background:#FF5A7A" title="핑크" onclick="applyColor('#FF5A7A')"></div>
+          <div class="color-swatch" style="background:#6366F1" title="인디고" onclick="applyColor('#6366F1')"></div>
+          <div class="color-swatch" style="background:#10B981" title="에메랄드" onclick="applyColor('#10B981')"></div>
+          <div class="color-swatch" style="background:#F59E0B" title="앰버" onclick="applyColor('#F59E0B')"></div>
+          <div class="color-swatch" style="background:#EF4444" title="레드" onclick="applyColor('#EF4444')"></div>
+          <div class="color-swatch" style="background:#0EA5E9" title="스카이블루" onclick="applyColor('#0EA5E9')"></div>
+        </div>
+        <div class="color-preview-bar" id="color-preview-bar" style="background:#C29F53"></div>
+      </div>
+    </div>
+
+    <!-- ② 시술 / 가격 -->
+    <div class="sec" id="sec-price">
+      <div class="sec-title">시술 / 가격</div>
+      <div class="sec-desc">외국인 환자에게 보여줄 시술 목록을 관리합니다.</div>
+
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px">가격 설정</div>
+        <div class="toggle-row">
+          <div class="toggle-l">
+            <span class="toggle-name">VAT 포함 가격 표시</span>
+            <span class="toggle-sub">ON이면 "모든 가격은 VAT 포함" 문구 자동 표시</span>
+          </div>
+          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">시술 목록</span>
+          <span class="card-hint">카드 클릭 시 WhatsApp 상담으로 연결됨</span>
+        </div>
+        <div class="prod-list" id="prod-list">
+          <!-- 시술 1: 리쥬란 힐러 -->
+          <div class="prod-card">
+            <div class="prod-thumb has-img" title="이미지 변경"></div>
+            <div class="prod-fields">
+              <div class="field"><label>시술명</label><input type="text" value="Rejuran Healer 2cc"></div>
+              <div class="field"><label>카테고리</label><select><option selected>스킨부스터</option><option>리프팅 / RF</option><option>보톡스</option><option>레이저</option></select></div>
+              <div class="field"><label>정상가 (₩)</label><input type="number" value="360000" oninput="calcDisc(this)"></div>
+              <div class="field"><label>할인가 (₩)</label><input type="number" value="220000" oninput="calcDisc(this)"></div>
+            </div>
+            <div class="prod-disc-out" id="disc-0">38%</div>
+            <button class="prod-del" onclick="delProd(this)">×</button>
+          </div>
+          <!-- 시술 2: 울쎄라 -->
+          <div class="prod-card">
+            <div class="prod-thumb has-img"></div>
+            <div class="prod-fields">
+              <div class="field"><label>시술명</label><input type="text" value="HIFU Ulthera 300 shots"></div>
+              <div class="field"><label>카테고리</label><select><option>스킨부스터</option><option selected>리프팅 / RF</option><option>보톡스</option><option>레이저</option></select></div>
+              <div class="field"><label>정상가 (₩)</label><input type="number" value="580000" oninput="calcDisc(this)"></div>
+              <div class="field"><label>할인가 (₩)</label><input type="number" value="390000" oninput="calcDisc(this)"></div>
+            </div>
+            <div class="prod-disc-out" id="disc-1">33%</div>
+            <button class="prod-del" onclick="delProd(this)">×</button>
+          </div>
+          <!-- 시술 3: 써마지 CPT -->
+          <div class="prod-card">
+            <div class="prod-thumb has-img"></div>
+            <div class="prod-fields">
+              <div class="field"><label>시술명</label><input type="text" value="Thermage CPT Eye 75 shots"></div>
+              <div class="field"><label>카테고리</label><select><option>스킨부스터</option><option selected>리프팅 / RF</option><option>보톡스</option><option>레이저</option></select></div>
+              <div class="field"><label>정상가 (₩)</label><input type="number" value="500000" oninput="calcDisc(this)"></div>
+              <div class="field"><label>할인가 (₩)</label><input type="number" value="320000" oninput="calcDisc(this)"></div>
+            </div>
+            <div class="prod-disc-out" id="disc-2">36%</div>
+            <button class="prod-del" onclick="delProd(this)">×</button>
+          </div>
+          <!-- 시술 4: 피코 레이저 -->
+          <div class="prod-card">
+            <div class="prod-thumb has-img"></div>
+            <div class="prod-fields">
+              <div class="field"><label>시술명</label><input type="text" value="Pico Toning Laser x3"></div>
+              <div class="field"><label>카테고리</label><select><option>스킨부스터</option><option>리프팅 / RF</option><option>보톡스</option><option selected>레이저</option></select></div>
+              <div class="field"><label>정상가 (₩)</label><input type="number" value="240000" oninput="calcDisc(this)"></div>
+              <div class="field"><label>할인가 (₩)</label><input type="number" value="168000" oninput="calcDisc(this)"></div>
+            </div>
+            <div class="prod-disc-out" id="disc-3">30%</div>
+            <button class="prod-del" onclick="delProd(this)">×</button>
+          </div>
+          <!-- 시술 5: 스킨보톡스 -->
+          <div class="prod-card">
+            <div class="prod-thumb has-img"></div>
+            <div class="prod-fields">
+              <div class="field"><label>시술명</label><input type="text" value="Skin Botox Full Face"></div>
+              <div class="field"><label>카테고리</label><select><option>스킨부스터</option><option>리프팅 / RF</option><option selected>보톡스</option><option>레이저</option></select></div>
+              <div class="field"><label>정상가 (₩)</label><input type="number" value="200000" oninput="calcDisc(this)"></div>
+              <div class="field"><label>할인가 (₩)</label><input type="number" value="120000" oninput="calcDisc(this)"></div>
+            </div>
+            <div class="prod-disc-out" id="disc-4">40%</div>
+            <button class="prod-del" onclick="delProd(this)">×</button>
+          </div>
+        </div>
+        <button class="add-btn" style="margin-top:10px" onclick="addProd()">＋ 시술 추가</button>
+      </div>
+    </div>
+
+    <!-- ③ 후기 -->
+    <div class="sec" id="sec-review">
+      <div class="sec-title">후기</div>
+      <div class="sec-desc">각 플랫폼의 평점·개수를 입력하고, 대표 후기 카드를 관리합니다.</div>
+
+      <div class="review-ch-card">
+        <div class="review-ch-ic" style="background:#4285F4">G</div>
+        <div style="flex:1">
+          <div class="review-ch-name">Google</div>
+          <div class="review-ch-fields">
+            <div class="field"><label>별점</label><input type="number" id="f-google-rating" value="4.8" min="0" max="5" step="0.1"></div>
+            <div class="field"><label>후기 수</label><input type="number" id="f-google-count" value="3847"></div>
+            <div class="field"><label>원본 링크 (→ "전체 보기" 연결)</label><input type="url" placeholder="https://maps.google.com/..."></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-ch-card">
+        <div class="review-ch-ic" style="background:#03C75A">N</div>
+        <div style="flex:1">
+          <div class="review-ch-name">Naver</div>
+          <div class="review-ch-fields">
+            <div class="field"><label>별점</label><input type="number" id="f-naver-rating" value="4.7" min="0" max="5" step="0.1"></div>
+            <div class="field"><label>후기 수</label><input type="number" id="f-naver-count" value="2104"></div>
+            <div class="field"><label>원본 링크 (→ "전체 보기" 연결)</label><input type="url" placeholder="https://map.naver.com/..."></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <div class="card-head">
+          <span class="card-title">대표 후기 카드</span>
+          <span class="card-hint">플랫폼 탭에 각각 최대 10개 표시</span>
+        </div>
+
+        <div id="rev-list">
+          <div class="rev-item">
+            <div class="rev-item-fields" style="grid-template-columns:96px 92px 100px 1fr">
+              <div class="field"><label>플랫폼</label><select><option selected>Google</option><option>Naver</option></select></div>
+              <div class="field"><label>별점</label><select><option selected>★★★★★</option><option>★★★★☆</option><option>★★★☆☆</option></select></div>
+              <div class="field"><label>작성자명</label><input type="text" value="Sarah K."></div>
+              <div class="field"><label>후기 내용</label><input type="text" value='"Consultation was fully in English and price was exactly as quoted."'></div>
+            </div>
+            <div class="field-row" style="margin-top:8px;gap:8px">
+              <div class="field" style="margin:0;flex:0 0 120px"><label>날짜</label><input type="text" value="Jun 2026"></div>
+              <div class="field" style="margin:0;flex:0 0 170px"><label>국적 (언어로 특정 가능한 경우만)</label><input type="text" placeholder="예: 일본 (일본어 후기만)"></div>
+            </div>
+            <button class="prod-del" onclick="delRev(this)" style="margin-left:8px;align-self:flex-start;margin-top:6px">×</button>
+          </div>
+          <div class="rev-item">
+            <div class="rev-item-fields" style="grid-template-columns:96px 92px 100px 1fr">
+              <div class="field"><label>플랫폼</label><select><option>Google</option><option selected>Naver</option></select></div>
+              <div class="field"><label>별점</label><select><option selected>★★★★★</option><option>★★★★☆</option></select></div>
+              <div class="field"><label>작성자명</label><input type="text" value="kim****"></div>
+              <div class="field"><label>후기 내용</label><input type="text" value='"리쥬란 가격 처음 안내대로 딱 나왔고 추가 권유 없어서 믿음직했어요."'></div>
+            </div>
+            <div class="field-row" style="margin-top:8px;gap:8px">
+              <div class="field" style="margin:0;flex:0 0 120px"><label>날짜</label><input type="text" value="Jun 2026"></div>
+              <div class="field" style="margin:0;flex:0 0 170px"><label>국적 (언어로 특정 가능한 경우만)</label><input type="text" value="한국" placeholder="예: 한국"></div>
+            </div>
+            <button class="prod-del" onclick="delRev(this)" style="margin-left:8px;align-self:flex-start;margin-top:6px">×</button>
+          </div>
+        </div>
+        <button class="add-btn" style="margin-top:10px" onclick="addRev()">＋ 후기 추가</button>
+      </div>
+    </div>
+
+    <!-- ④ 의료진 -->
+    <div class="sec" id="sec-doctor">
+      <div class="sec-title">의료진</div>
+      <div class="sec-desc">등록된 의료진이 B2C 페이지에 순서대로 표시됩니다.</div>
+      <div id="doc-list">
+        <div class="doc-card">
+          <div class="doc-card-head">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="doc-card-num">의료진 1</span>
+              <span class="doc-card-name" id="doc-label-0">Dr. Jiyoung Park</span>
+            </div>
+            <button class="doc-card-del" onclick="delDoc(this)" title="삭제">×</button>
+          </div>
+          <div class="doc-layout">
+            <div class="doc-photo-slot filled" onclick="toast('사진 업로드는 실제 서비스에서 제공됩니다')">
+            </div>
+            <div>
+              <div class="field"><label>이름 <span class="required">*</span></label><input type="text" id="f-doc-name" value="박지영 원장 (Dr. Park Jiyoung)" oninput="updateDocLabel(this)"></div>
+              <div class="field"><label>전문 자격 <span class="required">*</span></label><input type="text" id="f-doc-spec" value="피부과 전문의 · 대한피부과학회 정회원"></div>
+              <div class="field"><label>핵심 학력 <span class="required">*</span></label><input type="text" id="f-doc-edu" value="서울대학교 의학대학원 졸업 · 의학박사"></div>
+              <div class="field"><label>업무 경험 <span class="required">*</span></label><input type="text" id="f-doc-exp" value="전 삼성서울병원 피부과 · 미용피부과 임상 14년"></div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="field" style="margin-bottom:0">
+            <label>의사 한마디</label>
+            <textarea id="f-doc-msg">"외국에서 오신 환자분께 저는 시술 전에 반드시 세 가지를 약속드립니다. 정품 장비 사용, 추가 권유 없는 투명한 가격, 그리고 영어 통역이 가능한 1:1 상담입니다."</textarea>
+            <div class="hint">한국어로 입력하면 선택 언어로 자동 번역됩니다.</div>
+          </div>
+        </div>
+      </div>
+      <button class="add-btn" onclick="addDoc()">＋ 의료진 추가</button>
+    </div>
+
+    <!-- ⑤ 클리닉 정보 -->
+    <div class="sec" id="sec-info">
+      <div class="sec-title">클리닉 정보</div>
+      <div class="sec-desc">연락처, 오는 방법, 진료시간, 지도를 설정합니다.</div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">연락처</span><span class="card-hint">최대 3개</span></div>
+        <div id="phone-list">
+          <div class="phone-row">
+            <div class="field phone-tag-input"><label>구분</label><input type="text" value="대표" placeholder="대표"></div>
+            <div class="field phone-num-input"><label>전화번호</label><input type="tel" value="+82-2-512-7700"></div>
+            <button class="phone-del" onclick="delPhone(this)">×</button>
+          </div>
+          <div class="phone-row">
+            <div class="field phone-tag-input"><label>구분</label><input type="text" value="예약"></div>
+            <div class="field phone-num-input"><label>전화번호</label><input type="tel" value="+82-2-512-7701"></div>
+            <button class="phone-del" onclick="delPhone(this)">×</button>
+          </div>
+          <div class="phone-row">
+            <div class="field phone-tag-input"><label>구분</label><input type="text" value="외국인 전용"></div>
+            <div class="field phone-num-input"><label>전화번호</label><input type="tel" value="+82-10-7732-5128"></div>
+            <button class="phone-del" onclick="delPhone(this)">×</button>
+          </div>
+        </div>
+        <button class="add-btn" id="add-phone-btn" onclick="addPhone()" style="margin-top:4px;display:none">＋ 전화번호 추가</button>
+      </div>
+
+      <div class="card">
+        <div class="field">
+          <label>오는 방법</label>
+          <textarea id="f-directions">2호선 강남역 3번 출구 → 도보 4분. 도산대로 153 서울스킨랩 빌딩 9층. 건물 내 주차 가능 (2시간 무료).</textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px">진료시간</div>
+        <div class="field-row">
+          <div class="field"><label>평일 (월–금)</label><input type="text" id="f-hours-weekday" value="10:00 – 19:30"></div>
+          <div class="field"><label>토요일</label><input type="text" id="f-hours-sat" value="10:00 – 17:00"></div>
+          <div class="field"><label>일요일 / 공휴일</label><input type="text" id="f-hours-sun" value="휴무"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><span class="card-title">지도</span><span class="card-hint">구글맵 링크 → "지도 보기" 클릭 시 연결</span></div>
+        <div class="field">
+          <label>구글맵 URL</label>
+          <input type="url" placeholder="https://maps.google.com/...">
+        </div>
+        <div class="img-slot" style="height:120px;margin-top:8px" onclick="toast('지도 이미지 업로드는 실제 서비스에서 제공됩니다')">
+          <span style="font-size:28px">🗺</span>
+          <span style="font-size:12px;color:#AAA">지도 이미지 업로드 (선택)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑥ 언어 설정 -->
+    <div class="sec" id="sec-lang">
+      <div class="sec-title">언어 설정</div>
+      <div class="sec-desc">ON된 언어만 상단 언어 탭에 표시됩니다.</div>
+      <div class="card lang-card">
+        <div class="toggle-row">
+          <div class="toggle-l">
+            <span class="toggle-name">🇰🇷 한국어</span>
+            <span class="toggle-sub">기본 언어 · 항상 활성화</span>
+          </div>
+          <label class="toggle"><input type="checkbox" checked disabled><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-l">
+            <span class="toggle-name">🇺🇸 English</span>
+            <span class="toggle-sub">영어권 외국인 환자를 위한 콘텐츠</span>
+          </div>
+          <label class="toggle"><input type="checkbox" id="lang-en" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-l">
+            <span class="toggle-name">🇯🇵 日本語</span>
+            <span class="toggle-sub">일본인 환자가 많다면 활성화 권장</span>
+          </div>
+          <label class="toggle"><input type="checkbox" id="lang-ja" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-l">
+            <span class="toggle-name">🇨🇳 中文</span>
+            <span class="toggle-sub">중국인 환자가 많다면 활성화 권장</span>
+          </div>
+          <label class="toggle"><input type="checkbox" id="lang-zh"><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+      <div class="card" style="background:#FFFBEB;border-color:#FDE68A">
+        <div style="font-size:13px;font-weight:700;margin-bottom:6px">💡 번역 안내</div>
+        <div style="font-size:13px;color:#666;line-height:1.6">의사 한마디, 오는 방법 등 직접 입력한 텍스트는 한국어로 입력하면 <b>AI가 자동 번역 초안</b>을 생성합니다. 검수 후 저장하세요.<br><span style="color:#AAA;font-size:12px">※ 자동 번역 기능은 Pro 플랜 이상에서 제공됩니다.</span></div>
+      </div>
+    </div>
+
+    <!-- ⑦ 상담 채널 -->
+    <div class="sec" id="sec-channel">
+      <div class="sec-title">상담 채널</div>
+      <div class="sec-desc">외국인이 상담할 수 있는 채널을 설정합니다. 최소 1개 필수.</div>
+
+      <div class="channel-row">
+        <div class="channel-ic" style="background:#25D366;color:#fff;font-size:22px">💬</div>
+        <div class="channel-name">WhatsApp</div>
+        <div class="channel-field field"><label>전화번호 (국가코드 포함)</label><input type="tel" id="ch-whatsapp-val" value="+82 10-1234-5678" placeholder="+82 10-1234-5678"></div>
+        <label class="toggle"><input type="checkbox" id="ch-whatsapp-on" checked><span class="toggle-slider"></span></label>
+      </div>
+
+      <div class="channel-row">
+        <div class="channel-ic" style="background:#06C755;color:#fff;font-size:22px">💬</div>
+        <div class="channel-name">LINE</div>
+        <div class="channel-field field"><label>LINE ID</label><input type="text" id="ch-line-val" value="@seoulskinclinic" placeholder="@your-line-id"></div>
+        <label class="toggle"><input type="checkbox" id="ch-line-on" checked><span class="toggle-slider"></span></label>
+      </div>
+
+      <div class="channel-row">
+        <div class="channel-ic" style="background:#FAE100;font-size:22px">💬</div>
+        <div class="channel-name">KakaoTalk</div>
+        <div class="channel-field field"><label>카카오 채널 URL</label><input type="url" id="ch-kakao-val" value="https://pf.kakao.com/xxxx" placeholder="https://pf.kakao.com/..."></div>
+        <label class="toggle"><input type="checkbox" id="ch-kakao-on" checked><span class="toggle-slider"></span></label>
+      </div>
+
+      <div class="channel-row">
+        <div class="channel-ic" style="background:#07C160;font-size:22px;color:#fff">微</div>
+        <div class="channel-name">WeChat</div>
+        <div class="channel-field field"><label>WeChat ID</label><input type="text" id="ch-wechat-val" placeholder="WeChat ID 또는 공식 계정명"></div>
+        <label class="toggle"><input type="checkbox" id="ch-wechat-on"><span class="toggle-slider"></span></label>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <div class="card-title" style="margin-bottom:12px">프리필 메시지 템플릿</div>
+        <div class="field">
+          <label>시술 카드 클릭 시 자동 입력되는 메시지</label>
+          <input type="text" value="Hi, I'm interested in {시술명}. Can I get more information?">
+          <div class="hint">{시술명}은 클릭한 시술명으로 자동 교체됩니다.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑧ 공지사항 -->
+    <div class="sec" id="sec-notice">
+      <div class="sec-title">공지사항</div>
+      <div class="sec-desc">ON이면 B2C 페이지에 [공지사항] 탭이 표시됩니다. OFF면 탭 자체가 숨겨집니다.</div>
+
+      <div class="card">
+        <div class="toggle-row" style="border-bottom:none">
+          <div class="toggle-l">
+            <span class="toggle-name">공지사항 탭 노출</span>
+            <span class="toggle-sub">ON이면 방문자 페이지에 [공지사항] 탭이 표시됩니다</span>
+          </div>
+          <label class="toggle"><input type="checkbox" id="notice-enabled" onchange="onNoticeToggle()"><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+
+      <div id="notice-editor" style="display:none">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:16px">공지 내용</div>
+          <div class="field">
+            <label>제목 <span class="required">*</span></label>
+            <input type="text" id="notice-title" placeholder="예: 7월 여름 이벤트 안내" oninput="previewNotice()">
+          </div>
+          <div class="field">
+            <label>내용</label>
+            <textarea id="notice-content" style="min-height:120px" placeholder="공지 내용을 입력하세요. 줄바꿈이 그대로 반영됩니다." oninput="previewNotice()"></textarea>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>기간 / 날짜 <span style="font-weight:500;color:#AAA">(선택)</span></label>
+            <input type="text" id="notice-date" placeholder="예: 2026. 7. 1 ~ 7. 31" oninput="previewNotice()">
+            <div class="hint">입력하면 공지 카드 우측에 표시됩니다.</div>
+          </div>
+        </div>
+        <div class="card" style="background:#F0FFF4;border-color:#BBF7D0">
+          <div style="font-size:13px;font-weight:700;margin-bottom:6px">💡 다국어 안내</div>
+          <div style="font-size:13px;color:#666;line-height:1.6">공지 제목·내용은 현재 언어와 상관없이 입력한 텍스트 그대로 표시됩니다.<br><span style="color:#AAA;font-size:12px">※ 자동 번역 기능은 Pro 플랜에서 제공될 예정입니다.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑨ 통계 -->
+    <div class="sec" id="sec-stats">
+      <div class="sec-title">통계</div>
+      <div class="sec-desc">방문자 → 상담 전환 흐름을 한눈에 파악합니다.</div>
+
+      <!-- 기간 선택 -->
+      <div class="stat-period">
+        <span style="font-size:13px;font-weight:700;color:#666">기간</span>
+        <select onchange="updateStats(this.value)">
+          <option value="30">최근 30일</option>
+          <option value="7">최근 7일</option>
+          <option value="90">최근 90일</option>
+        </select>
+        <span style="font-size:12px;color:#AAA;margin-left:4px">마지막 업데이트: 2026. 6. 15. 오전 9:00</span>
+      </div>
+
+      <!-- ─── 섹션 1: 총 방문 ─── -->
+      <div class="sstat">
+        <div class="sstat-head">
+          <span class="sstat-num">01</span>
+          <span class="sstat-title">총 방문</span>
+          <span class="sstat-sub">Instagram 링크를 타고 들어온 전체 방문 수</span>
+        </div>
+
+        <div class="visit-top">
+          <div class="big-kpi">
+            <div class="big-kpi-label">이번 기간 총 방문</div>
+            <div class="big-kpi-val" id="kv-visit">1,284</div>
+            <div class="big-kpi-unit">명</div>
+            <div class="big-kpi-diff"><span class="diff-up">▲ 18%</span><span style="color:#AAA;font-weight:400">전 기간 대비</span></div>
+          </div>
+          <div class="chart-card" style="margin-bottom:0">
+            <div class="chart-title">
+              일별 방문 추이
+              <div style="display:flex;gap:12px">
+                <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#666"><span style="width:14px;height:2px;background:#FF5A7A;display:inline-block;border-radius:1px"></span>방문</div>
+                <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#AAA"><span style="width:14px;height:0;border-top:2px dashed #FFAACC;display:inline-block"></span>상담 클릭</div>
+              </div>
+            </div>
+            <svg class="line-chart" viewBox="0 0 560 110" preserveAspectRatio="none">
+              <line x1="0" y1="18" x2="560" y2="18" stroke="#F2F3F5" stroke-width="1"/>
+              <line x1="0" y1="55" x2="560" y2="55" stroke="#F2F3F5" stroke-width="1"/>
+              <line x1="0" y1="96" x2="560" y2="96" stroke="#F2F3F5" stroke-width="1"/>
+              <text x="2" y="16" font-size="9" fill="#CCC">80</text>
+              <text x="2" y="53" font-size="9" fill="#CCC">40</text>
+              <text x="2" y="94" font-size="9" fill="#CCC">0</text>
+              <polygon fill="#FF5A7A18" points="18,96 54,90 90,88 126,82 162,78 198,70 234,62 270,54 306,48 342,40 378,32 414,28 450,20 486,16 522,12 558,10 558,100 18,100"/>
+              <polyline fill="none" stroke="#FF5A7A" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="18,96 54,90 90,88 126,82 162,78 198,70 234,62 270,54 306,48 342,40 378,32 414,28 450,20 486,16 522,12 558,10"/>
+              <polyline fill="none" stroke="#FFAACC" stroke-width="1.5" stroke-dasharray="5,3" stroke-linejoin="round" points="18,104 54,100 90,98 126,94 162,92 198,86 234,80 270,74 306,68 342,62 378,56 414,52 450,46 486,42 522,38 558,36"/>
+            </svg>
+            <div class="line-chart-labels">
+              <span>5/16</span><span>5/23</span><span>5/30</span><span>6/6</span><span>6/15</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="visit-mini-grid">
+          <div class="mini-kpi">
+            <div class="mini-kpi-label">일 평균 방문</div>
+            <div class="mini-kpi-val" id="kv-daily">42.8명</div>
+            <div class="mini-kpi-sub">피크: 토·일 오후</div>
+          </div>
+          <div class="mini-kpi">
+            <div class="mini-kpi-label">평균 체류 시간</div>
+            <div class="mini-kpi-val">2분 14초</div>
+            <div class="mini-kpi-sub diff-up" style="font-size:11px">▲ 22초 전 기간 대비</div>
+          </div>
+          <div class="mini-kpi">
+            <div class="mini-kpi-label">재방문율</div>
+            <div class="mini-kpi-val">18%</div>
+            <div class="mini-kpi-sub" style="color:#AAA">신규 82% · 재방문 18%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── 섹션 2: 상담 버튼 클릭 ─── -->
+      <div class="sstat">
+        <div class="sstat-head">
+          <span class="sstat-num">02</span>
+          <span class="sstat-title">상담 버튼 클릭</span>
+          <span class="sstat-sub">WhatsApp · LINE · KakaoTalk · WeChat 버튼을 누른 횟수</span>
+        </div>
+
+        <div class="consult-grid">
+          <div class="cvr-big">
+            <div class="cvr-ring-wrap">
+              <svg class="cvr-ring" width="100" height="100" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#F2F3F5" stroke-width="10"/>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#FF5A7A" stroke-width="10"
+                  stroke-dasharray="61.1 251.3" stroke-linecap="round"/>
+              </svg>
+              <div class="cvr-center">
+                <span class="cvr-pct" id="kv-cvr">24.3%</span>
+                <span class="cvr-label">전환율</span>
+              </div>
+            </div>
+            <div class="cvr-meta">
+              총 <b id="kv-click" style="color:var(--ink)">312</b>명 클릭<br>
+              방문 <span id="kv-visit2">1,284</span>명 중
+            </div>
+            <div style="margin-top:10px;font-size:11px;color:#AAA">전 기간 대비 <span class="diff-up">▲ 1.8%p</span></div>
+          </div>
+
+          <div class="ch-list">
+            <div class="ch-row">
+              <div class="ch-ic" style="background:#25D366">W</div>
+              <span class="ch-name">WhatsApp</span>
+              <div class="ch-track-wrap">
+                <div class="ch-bar-track"><div class="ch-bar-fill" style="width:78%;background:#25D366"></div></div>
+                <div class="ch-nums"><span>전체의 78%</span><span class="diff-up">▲ 12%</span></div>
+              </div>
+              <span class="ch-cnt">243</span>
+              <span class="ch-pct" style="color:#25D366">78%</span>
+            </div>
+            <div class="ch-row">
+              <div class="ch-ic" style="background:#06C755">L</div>
+              <span class="ch-name">LINE</span>
+              <div class="ch-track-wrap">
+                <div class="ch-bar-track"><div class="ch-bar-fill" style="width:18%;background:#06C755"></div></div>
+                <div class="ch-nums"><span>전체의 18%</span><span class="diff-up">▲ 3%</span></div>
+              </div>
+              <span class="ch-cnt">56</span>
+              <span class="ch-pct" style="color:#06C755">18%</span>
+            </div>
+            <div class="ch-row">
+              <div class="ch-ic" style="background:#FAE100;color:#555">K</div>
+              <span class="ch-name">KakaoTalk</span>
+              <div class="ch-track-wrap">
+                <div class="ch-bar-track"><div class="ch-bar-fill" style="width:4%;background:#F0D000"></div></div>
+                <div class="ch-nums"><span>전체의 4%</span><span class="diff-neu" style="color:#AAA">변화없음</span></div>
+              </div>
+              <span class="ch-cnt">13</span>
+              <span class="ch-pct" style="color:#AAA">4%</span>
+            </div>
+            <div class="ch-row" style="opacity:.45">
+              <div class="ch-ic" style="background:#07C160">微</div>
+              <span class="ch-name">WeChat</span>
+              <div class="ch-track-wrap">
+                <div class="ch-bar-track"><div class="ch-bar-fill" style="width:0%;background:#07C160"></div></div>
+                <div class="ch-nums"><span style="color:#CCC">채널 비활성화</span></div>
+              </div>
+              <span class="ch-cnt" style="color:#CCC">–</span>
+              <span class="ch-pct" style="color:#CCC">–</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── 섹션 3: 상세 클릭 데이터 ─── -->
+      <div class="sstat">
+        <div class="sstat-head">
+          <span class="sstat-num">03</span>
+          <span class="sstat-title">상세 클릭 데이터</span>
+          <span class="sstat-sub">어떤 콘텐츠가 상담으로 이어지는지 파악합니다</span>
+        </div>
+
+        <div class="detail-grid">
+          <!-- 탭 열람 + 전환율 -->
+          <div class="chart-card">
+            <div class="chart-title">탭 열람률 <span class="chart-badge">열람 후 상담 전환율</span></div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#AAA;margin-bottom:10px">
+              <span style="flex:0 0 70px"></span><span>열람률</span><span style="margin-left:auto">상담 전환</span>
+            </div>
+            <div class="tab-reach-row">
+              <span class="tab-reach-name">가격 탭</span>
+              <div class="tab-reach-track"><div class="tab-reach-fill" style="width:94%"></div></div>
+              <span class="tab-reach-pct">94%</span>
+              <span class="tab-reach-cvr">CVR 19%</span>
+            </div>
+            <div class="tab-reach-row">
+              <span class="tab-reach-name">후기 탭</span>
+              <div class="tab-reach-track"><div class="tab-reach-fill" style="width:72%"></div></div>
+              <span class="tab-reach-pct">72%</span>
+              <span class="tab-reach-cvr" style="color:#16A34A;font-weight:800">CVR 34%</span>
+            </div>
+            <div class="tab-reach-row">
+              <span class="tab-reach-name">클리닉 탭</span>
+              <div class="tab-reach-track"><div class="tab-reach-fill" style="width:41%"></div></div>
+              <span class="tab-reach-pct">41%</span>
+              <span class="tab-reach-cvr" style="color:#16A34A;font-weight:800">CVR 51%</span>
+            </div>
+            <div class="insight-box">
+              💡 <b>후기·클리닉 탭까지 본 방문자</b>는 가격만 본 방문자보다 전환율이 <b>2.7배</b> 높습니다. 후기 콘텐츠를 더 적극적으로 채우세요.
+            </div>
+          </div>
+
+          <!-- 시술별 클릭 + 전환율 -->
+          <div class="chart-card">
+            <div class="chart-title">시술 카드 클릭 <span class="chart-badge">클릭 → 상담 전환율</span></div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#AAA;margin-bottom:10px">
+              <span style="flex:0 0 22px"></span><span>시술명</span><span style="margin-left:auto">클릭</span><span style="width:44px;text-align:right">전환율</span>
+            </div>
+            <div class="treat-row">
+              <div class="treat-rank r1">1</div>
+              <span class="treat-name">Rejuran Skin Booster</span>
+              <span class="treat-click">124회</span>
+              <span class="treat-cvr" style="color:#16A34A">38%</span>
+            </div>
+            <div class="treat-row">
+              <div class="treat-rank r2">2</div>
+              <span class="treat-name">Ulthera Lifting</span>
+              <span class="treat-click">88회</span>
+              <span class="treat-cvr" style="color:#16A34A;font-weight:800">44%</span>
+            </div>
+            <div class="treat-row">
+              <div class="treat-rank r3">3</div>
+              <span class="treat-name">Skin Botox</span>
+              <span class="treat-click">62회</span>
+              <span class="treat-cvr" style="color:#888">21%</span>
+            </div>
+            <div class="treat-row">
+              <div class="treat-rank rn">4</div>
+              <span class="treat-name">Pico Laser Toning</span>
+              <span class="treat-click">24회</span>
+              <span class="treat-cvr" style="color:#888">17%</span>
+            </div>
+            <div class="insight-box">
+              💡 <b>Ulthera는 클릭 대비 전환율 44%</b>로 가장 높습니다. 썸네일 이미지를 추가하면 클릭 수도 늘 수 있습니다.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── 섹션 4: 주요 방문 분포 ─── -->
+      <div class="sstat">
+        <div class="sstat-head">
+          <span class="sstat-num">04</span>
+          <span class="sstat-title">주요 방문 분포</span>
+          <span class="sstat-sub">누가 우리 병원에 오는지 파악합니다</span>
+        </div>
+
+        <div class="dist-grid">
+          <!-- 언어 분포 -->
+          <div class="chart-card">
+            <div class="chart-title">언어별 분포 <span class="chart-badge">국적 추정</span></div>
+            <div class="lang-row">
+              <span class="lang-flag">🇺🇸</span>
+              <span class="lang-name">English</span>
+              <div class="lang-bar-track"><div class="lang-bar-fill" style="width:44%"></div></div>
+              <span class="lang-pct">44%</span>
+            </div>
+            <div class="lang-row">
+              <span class="lang-flag">🇯🇵</span>
+              <span class="lang-name">日本語</span>
+              <div class="lang-bar-track"><div class="lang-bar-fill" style="width:31%"></div></div>
+              <span class="lang-pct">31%</span>
+            </div>
+            <div class="lang-row">
+              <span class="lang-flag">🇰🇷</span>
+              <span class="lang-name">한국어</span>
+              <div class="lang-bar-track"><div class="lang-bar-fill" style="width:16%"></div></div>
+              <span class="lang-pct">16%</span>
+            </div>
+            <div class="lang-row">
+              <span class="lang-flag">🇨🇳</span>
+              <span class="lang-name">中文</span>
+              <div class="lang-bar-track"><div class="lang-bar-fill" style="width:9%"></div></div>
+              <span class="lang-pct">9%</span>
+            </div>
+            <div class="insight-box">
+              💡 방문의 <b>75%가 영어·일본어권</b>. 중문 탭이 꺼져 있어 중국 고객을 놓칠 수 있습니다.
+            </div>
+          </div>
+
+          <!-- 시간대별 방문 -->
+          <div class="chart-card">
+            <div class="chart-title">방문 시간대 <span class="chart-badge">언제 광고·콘텐츠를 올릴지</span></div>
+            <div class="time-bar-wrap">
+              <div class="time-row">
+                <span class="time-label">오전 6–12시</span>
+                <div class="time-track"><div class="time-fill" style="width:14%"><span>14%</span></div></div>
+              </div>
+              <div class="time-row">
+                <span class="time-label">오후 12–18시</span>
+                <div class="time-track"><div class="time-fill" style="width:43%"><span>43%</span></div></div>
+              </div>
+              <div class="time-row">
+                <span class="time-label">저녁 18–24시</span>
+                <div class="time-track"><div class="time-fill" style="width:36%"><span>36%</span></div></div>
+              </div>
+              <div class="time-row">
+                <span class="time-label">심야 0–6시</span>
+                <div class="time-track"><div class="time-fill" style="width:7%"><span>7%</span></div></div>
+              </div>
+            </div>
+            <div class="insight-box">
+              💡 <b>오후 12–18시에 79%가 집중</b>. Instagram 피드 업로드는 오전 11–12시를 노리세요.
+            </div>
+          </div>
+
+          <!-- 유입 경로 -->
+          <div class="chart-card">
+            <div class="chart-title">유입 경로</div>
+            <div class="src-row">
+              <span class="src-ic">📸</span>
+              <span class="src-name">Instagram</span>
+              <div class="src-bar-track"><div class="src-bar-fill" style="width:81%;background:linear-gradient(90deg,#F77737,#C13584)"></div></div>
+              <span class="src-pct">81%</span>
+            </div>
+            <div class="src-row">
+              <span class="src-ic">🔗</span>
+              <span class="src-name">직접 링크</span>
+              <div class="src-bar-track"><div class="src-bar-fill" style="width:12%;background:#6366F1"></div></div>
+              <span class="src-pct">12%</span>
+            </div>
+            <div class="src-row">
+              <span class="src-ic">🔍</span>
+              <span class="src-name">검색</span>
+              <div class="src-bar-track"><div class="src-bar-fill" style="width:5%;background:#4285F4"></div></div>
+              <span class="src-pct">5%</span>
+            </div>
+            <div class="src-row">
+              <span class="src-ic">💬</span>
+              <span class="src-name">기타</span>
+              <div class="src-bar-track"><div class="src-bar-fill" style="width:2%;background:#DDD"></div></div>
+              <span class="src-pct" style="color:#AAA">2%</span>
+            </div>
+            <div class="insight-box">
+              💡 유입의 <b>81%가 Instagram</b>. Bio 링크와 스토리 링크 스티커를 모두 설정하면 유입이 늘어납니다.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- 미리보기 패널 -->
+  <aside class="preview-panel">
+    <div class="preview-hdr">
+      <span class="preview-hdr-label">B2C 미리보기</span>
+      <a href="demo-landing.html" target="_blank">새 탭 ↗</a>
+    </div>
+    <div class="phone-outer">
+      <iframe src="demo-landing.html" id="preview-frame" scrolling="yes"></iframe>
+    </div>
+    <div class="preview-url">
+      <span class="url-dot"></span>
+      hospitallink.io/seoul-skin-lab
+    </div>
+  </aside>
+
+</div>
+
+<div class="toast" id="toast-el"></div>
+
+<script>
+function go(el){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+  const id='sec-'+el.getAttribute('data-sec');
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function toast(msg){
+  const t=document.getElementById('toast-el');
+  t.innerHTML='<span>✓</span> '+(msg||'저장됐어요');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+function save(){
+  localStorage.setItem('brandColor', document.getElementById('brand-color-picker').value);
+  const noticeData = getNoticeData();
+  localStorage.setItem('noticeSettings', JSON.stringify(noticeData));
+  sendNoticeToPreview(noticeData);
+  localStorage.setItem('fullState', JSON.stringify(collectFullState()));
+  syncPreview();
+  toast('저장됐어요. 페이지에 바로 반영됐어요.');
+}
+
+function copyLink(){
+  navigator.clipboard?.writeText('https://hospitallink.io/seoul-skin-lab').catch(()=>{});
+  toast('링크가 복사됐어요');
+}
+
+/* 할인율 자동 계산 */
+function calcDisc(input){
+  const card=input.closest('.prod-card');
+  const inputs=card.querySelectorAll('input[type=number]');
+  const orig=parseFloat(inputs[0].value)||0;
+  const sale=parseFloat(inputs[1].value)||0;
+  const discEl=card.querySelector('.prod-disc-out');
+  if(orig>0&&sale>0&&sale<orig){
+    discEl.textContent=Math.round((1-sale/orig)*100)+'%';
+  } else {
+    discEl.textContent='–';
+  }
+}
+
+/* 시술 삭제 */
+function delProd(btn){ btn.closest('.prod-card').remove(); syncPreview(); }
+
+/* 시술 추가 */
+let prodIdx=10;
+function addProd(){
+  const card=document.createElement('div');
+  card.className='prod-card';
+  card.innerHTML=`
+    <div class="prod-thumb" onclick="toast('이미지 업로드는 실제 서비스에서 제공됩니다')"><span>＋</span></div>
+    <div class="prod-fields">
+      <div class="field"><label>시술명</label><input type="text" placeholder="시술명 입력"></div>
+      <div class="field"><label>카테고리</label><select><option>스킨부스터</option><option>리프팅 / RF</option><option>보톡스</option><option>레이저</option></select></div>
+      <div class="field"><label>정상가 (₩)</label><input type="number" placeholder="0" oninput="calcDisc(this)"></div>
+      <div class="field"><label>할인가 (₩)</label><input type="number" placeholder="0" oninput="calcDisc(this)"></div>
+    </div>
+    <div class="prod-disc-out">–</div>
+    <button class="prod-del" onclick="delProd(this)">×</button>`;
+  document.getElementById('prod-list').appendChild(card);
+  prodIdx++;
+  syncPreview();
+}
+
+/* 이미지 슬롯 */
+function imgClick(el){ toast('이미지 업로드는 실제 서비스에서 제공됩니다'); }
+function delSlot(e,btn){ e.stopPropagation(); const sl=btn.closest('.img-slot'); sl.classList.remove('filled'); sl.innerHTML='<span class="add-ic">＋</span>이미지 추가'; sl.onclick=()=>imgClick(sl); }
+
+/* 후기 추가/삭제 */
+function delRev(btn){ btn.closest('.rev-item').remove(); syncPreview(); }
+function addRev(){
+  const item=document.createElement('div');
+  item.className='rev-item';
+  item.innerHTML=`
+    <div class="rev-item-fields" style="grid-template-columns:96px 92px 100px 1fr">
+      <div class="field"><label>플랫폼</label><select><option>Google</option><option>Naver</option></select></div>
+      <div class="field"><label>별점</label><select><option>★★★★★</option><option>★★★★☆</option><option>★★★☆☆</option></select></div>
+      <div class="field"><label>작성자명</label><input type="text" placeholder="이름"></div>
+      <div class="field"><label>후기 내용</label><input type="text" placeholder="후기 내용 입력"></div>
+    </div>
+    <div class="field-row" style="margin-top:8px;gap:8px">
+      <div class="field" style="margin:0;flex:0 0 120px"><label>날짜</label><input type="text" placeholder="Jun 2026"></div>
+      <div class="field" style="margin:0;flex:0 0 170px"><label>국적 (언어로 특정 가능한 경우만)</label><input type="text" placeholder="예: 일본 (일본어 후기만)"></div>
+    </div>
+    <button class="prod-del" onclick="delRev(this)" style="margin-left:8px;align-self:flex-start;margin-top:6px">×</button>`;
+  document.getElementById('rev-list').appendChild(item);
+  syncPreview();
+}
+
+/* 의료진 */
+function updateDocLabel(input){
+  const card=input.closest('.doc-card');
+  const label=card.querySelector('.doc-card-name');
+  if(label) label.textContent=input.value||'이름 없음';
+}
+function delDoc(btn){
+  const list=document.getElementById('doc-list');
+  if(list.children.length<=1){ toast('최소 1명의 의료진이 필요합니다'); return; }
+  btn.closest('.doc-card').remove();
+  reIndexDocs();
+  syncPreview();
+}
+function reIndexDocs(){
+  document.querySelectorAll('#doc-list .doc-card').forEach((card,i)=>{
+    const num=card.querySelector('.doc-card-num');
+    if(num) num.textContent='의료진 '+(i+1);
+  });
+}
+function addDoc(){
+  const list=document.getElementById('doc-list');
+  const idx=list.children.length+1;
+  const card=document.createElement('div');
+  card.className='doc-card';
+  card.innerHTML=`
+    <div class="doc-card-head">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="doc-card-num">의료진 ${idx}</span>
+        <span class="doc-card-name">이름 없음</span>
+      </div>
+      <button class="doc-card-del" onclick="delDoc(this)" title="삭제">×</button>
+    </div>
+    <div class="doc-layout">
+      <div class="doc-photo-slot" onclick="toast('사진 업로드는 실제 서비스에서 제공됩니다')">
+        <span class="ph-ic">👤</span>
+        <span style="font-size:11px;color:#BBB">사진 추가</span>
+      </div>
+      <div>
+        <div class="field"><label>이름 <span class="required">*</span></label><input type="text" placeholder="예: Dr. Kim Minjun" oninput="updateDocLabel(this)"></div>
+        <div class="field"><label>핵심 학력 <span class="required">*</span></label><input type="text" placeholder="예: 연세대학교 의과대학"></div>
+        <div class="field"><label>업무 경험 <span class="required">*</span></label><input type="text" placeholder="예: 피부과 전문의 8년"></div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="field" style="margin-bottom:0">
+      <label>의사 한마디</label>
+      <textarea placeholder="외국인 환자에게 신뢰를 주는 메시지를 작성하세요."></textarea>
+      <div class="hint">한국어로 입력하면 선택 언어로 자동 번역됩니다.</div>
+    </div>`;
+  list.appendChild(card);
+  card.querySelector('input').focus();
+}
+
+/* 전화번호 */
+function delPhone(btn){
+  const list=document.getElementById('phone-list');
+  btn.closest('.phone-row').remove();
+  document.getElementById('add-phone-btn').style.display=list.children.length<3?'flex':'none';
+  syncPreview();
+}
+function addPhone(){
+  const list=document.getElementById('phone-list');
+  if(list.children.length>=3)return;
+  const row=document.createElement('div');
+  row.className='phone-row';
+  row.innerHTML=`
+    <div class="field phone-tag-input"><label>구분</label><input type="text" placeholder="예: 예약"></div>
+    <div class="field phone-num-input"><label>전화번호</label><input type="tel" placeholder="+82-2-XXXX-XXXX"></div>
+    <button class="phone-del" onclick="delPhone(this)">×</button>`;
+  list.appendChild(row);
+  if(list.children.length>=3) document.getElementById('add-phone-btn').style.display='none';
+  syncPreview();
+}
+// 초기 전화번호 3개 이미 있으면 추가 버튼 숨김
+(function(){ if(document.getElementById('phone-list').children.length>=3) document.getElementById('add-phone-btn').style.display='none'; })();
+
+/* 브랜드 컬러 관리 */
+const DEFAULT_COLOR = '#C29F53';
+
+function applyColor(hex) {
+  document.getElementById('brand-color-picker').value = hex;
+  document.getElementById('brand-color-hex').value = hex;
+  document.getElementById('color-preview-bar').style.background = hex;
+  document.querySelectorAll('.color-swatch').forEach(s => {
+    s.classList.toggle('active', s.style.background === hexToRgbStyle(hex) || s.getAttribute('title') && s.style.background.toLowerCase() === hex.toLowerCase());
+  });
+  sendColorToPreview(hex);
+}
+
+function onColorPickerChange(hex) {
+  document.getElementById('brand-color-hex').value = hex;
+  document.getElementById('color-preview-bar').style.background = hex;
+  sendColorToPreview(hex);
+}
+
+function onColorHexChange(val) {
+  if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+    document.getElementById('brand-color-picker').value = val;
+    document.getElementById('color-preview-bar').style.background = val;
+    sendColorToPreview(val);
+  }
+}
+
+function hexToRgbStyle(hex) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return 'rgb('+r+', '+g+', '+b+')';
+}
+
+function sendColorToPreview(hex) {
+  const frame = document.getElementById('preview-frame');
+  try { frame.contentWindow.postMessage({ type: 'setBrandColor', color: hex }, '*'); } catch(e) {}
+}
+
+function initBrandColor() {
+  const saved = localStorage.getItem('brandColor') || DEFAULT_COLOR;
+  document.getElementById('brand-color-picker').value = saved;
+  document.getElementById('brand-color-hex').value = saved;
+  document.getElementById('color-preview-bar').style.background = saved;
+}
+
+/* ── 공지사항 ── */
+function onNoticeToggle(){
+  const enabled=document.getElementById('notice-enabled').checked;
+  document.getElementById('notice-editor').style.display=enabled?'':'none';
+  previewNotice();
+}
+
+function getNoticeData(){
+  return{
+    enabled: document.getElementById('notice-enabled').checked,
+    title:   document.getElementById('notice-title').value,
+    content: document.getElementById('notice-content').value,
+    date:    document.getElementById('notice-date').value,
+  };
+}
+
+function sendNoticeToPreview(data){
+  const frame=document.getElementById('preview-frame');
+  try{frame.contentWindow.postMessage({type:'setNotice',...data},'*');}catch(e){}
+}
+
+function previewNotice(){
+  sendNoticeToPreview(getNoticeData());
+}
+
+const DEFAULT_NOTICE={
+  enabled:true,
+  title:'7월 외국인 환자 프로모션 안내',
+  content:'안녕하세요, 서울스킨랩입니다.\n7월 한 달간 외국인 환자분들을 위해 리쥬란 힐러 2cc + 스킨보톡스 풀페이스를 묶음가 290,000원에 진행합니다 (정가 420,000원).\n\n예약하실 때 카카오톡, 라인, 왓츠앱 중 편하신 채널로 "7월 이벤트 보고 왔어요"라고 말씀해 주시면 바로 안내드립니다.\n선착순으로 진행되니 빠른 예약 추천드립니다.',
+  date:'2026.7.1 ~ 2026.7.31'
+};
+
+function initNotice(){
+  const saved=localStorage.getItem('noticeSettings');
+  let d=DEFAULT_NOTICE;
+  if(saved){
+    try{ d=JSON.parse(saved); }catch(e){ d=DEFAULT_NOTICE; }
+  }
+  document.getElementById('notice-enabled').checked=!!d.enabled;
+  document.getElementById('notice-title').value=d.title||'';
+  document.getElementById('notice-content').value=d.content||'';
+  document.getElementById('notice-date').value=d.date||'';
+  document.getElementById('notice-editor').style.display=d.enabled?'':'none';
+}
+
+/* ── B2C 미리보기 실시간 동기화 ── */
+const CATEGORY_MAP={'스킨부스터':'skin','리프팅 / RF':'lifting','보톡스':'botox','레이저':'laser'};
+function val(sel){ const el=document.querySelector(sel); return el?el.value:''; }
+function chk(sel){ const el=document.querySelector(sel); return el?el.checked:false; }
+
+function collectProducts(){
+  return [...document.querySelectorAll('#prod-list .prod-card')].map(card=>{
+    const inputs=card.querySelectorAll('.prod-fields input');
+    const select=card.querySelector('.prod-fields select');
+    return {
+      name: inputs[0]?.value||'',
+      cat: CATEGORY_MAP[select?.value]||'all',
+      orig: parseFloat(inputs[1]?.value)||0,
+      sale: parseFloat(inputs[2]?.value)||0
+    };
+  });
+}
+
+function collectPhones(){
+  return [...document.querySelectorAll('#phone-list .phone-row')].map(row=>({
+    tag: row.querySelector('.phone-tag-input input')?.value||'',
+    num: row.querySelector('.phone-num-input input')?.value||''
+  }));
+}
+
+function collectFullState(){
+  return {
+    name: val('#f-name'),
+    station: val('#f-station'),
+    exit: val('#f-exit'),
+    address: val('#f-address'),
+    rating: val('#f-rating'),
+    reviewCount: val('#f-reviewcount'),
+    googleRating: val('#f-google-rating'),
+    googleCount: val('#f-google-count'),
+    naverRating: val('#f-naver-rating'),
+    naverCount: val('#f-naver-count'),
+    products: collectProducts(),
+    doctor: {
+      name: val('#f-doc-name'),
+      spec: val('#f-doc-spec'),
+      edu: val('#f-doc-edu'),
+      exp: val('#f-doc-exp'),
+      msg: val('#f-doc-msg')
+    },
+    phones: collectPhones(),
+    directions: val('#f-directions'),
+    hours: { weekday: val('#f-hours-weekday'), sat: val('#f-hours-sat'), sun: val('#f-hours-sun') },
+    langs: { en: chk('#lang-en'), ja: chk('#lang-ja'), zh: chk('#lang-zh') },
+    channels: {
+      whatsapp: { on: chk('#ch-whatsapp-on'), val: val('#ch-whatsapp-val') },
+      line:     { on: chk('#ch-line-on'),     val: val('#ch-line-val') },
+      kakao:    { on: chk('#ch-kakao-on'),    val: val('#ch-kakao-val') },
+      wechat:   { on: chk('#ch-wechat-on'),   val: val('#ch-wechat-val') }
+    }
+  };
+}
+
+let syncRAF=null;
+function syncPreview(){
+  if(syncRAF) return;
+  syncRAF=requestAnimationFrame(()=>{
+    syncRAF=null;
+    const frame=document.getElementById('preview-frame');
+    try{ frame.contentWindow.postMessage({type:'fullSync', state:collectFullState()}, '*'); }catch(e){}
+  });
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  initBrandColor();
+  initNotice();
+  const content=document.querySelector('.content');
+  content.addEventListener('input', syncPreview);
+  content.addEventListener('change', syncPreview);
+  document.getElementById('preview-frame').addEventListener('load', syncPreview);
+  syncPreview();
+});
+
+/* 통계 기간 전환 */
+const STAT_DATA={
+  7: {visit:'298', click:'71', cvr:'23.8%', daily:'42.6명', visit2:'298'},
+  30:{visit:'1,284', click:'312', cvr:'24.3%', daily:'42.8명', visit2:'1,284'},
+  90:{visit:'3,641', click:'876', cvr:'24.1%', daily:'40.5명', visit2:'3,641'}
+};
+function updateStats(days){
+  const d=STAT_DATA[days]||STAT_DATA[30];
+  ['kv-visit','kv-visit2'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=d.visit; });
+  document.getElementById('kv-click').textContent=d.click;
+  document.getElementById('kv-cvr').textContent=d.cvr;
+  document.getElementById('kv-daily').textContent=d.daily;
+  /* CVR 링 업데이트 */
+  const pct=parseFloat(d.cvr);
+  const circ=2*Math.PI*40;
+  const fill=(pct/100)*circ;
+  const ring=document.querySelector('.cvr-ring circle:last-child');
+  if(ring) ring.setAttribute('stroke-dasharray', fill.toFixed(1)+' '+circ.toFixed(1));
+}
+</script>
+</body>
+</html>

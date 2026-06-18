@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Seoul Skin Lab — Foreign Patient Clinic Page</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans','Noto Sans JP','Noto Sans SC',sans-serif;background:#EEE;color:#222}
+.phone{max-width:430px;margin:0 auto;background:#fff;min-height:100vh;position:relative;overflow-x:hidden;padding-bottom:88px}
+:root{--pink:#C29F53;--ink:#222;--ph-bg:#E5E7EB}
+
+/* top bar */
+.topbar{position:sticky;top:0;z-index:95;display:flex;align-items:center;justify-content:flex-end;padding:11px 14px;background:#fff;border-bottom:1px solid #F0F0F0}
+.lang-pill{display:flex;border:1px solid #E5E5E5;border-radius:20px;overflow:hidden}
+.lang-pill .lp{font-size:11px;font-weight:600;padding:5px 9px;color:#999;cursor:pointer}
+.lang-pill .lp.active{background:var(--ink);color:#fff}
+
+/* gallery */
+.gallery-wrap{position:relative}
+.gallery{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.gallery::-webkit-scrollbar{display:none}
+.gphoto{flex:none;width:100%;height:236px;scroll-snap-align:start;background:#E5E5E5}
+.gcount{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.5);color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;backdrop-filter:blur(4px)}
+.dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:5px}
+.dot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.55);transition:all .25s}
+.dot.active{background:#fff;width:16px}
+
+/* clinic head */
+.chead{padding:16px}
+.cname{font-size:23px;font-weight:800;letter-spacing:-.02em;margin-bottom:7px}
+.crate{display:flex;align-items:center;gap:9px;font-size:13.5px;margin-bottom:8px;flex-wrap:wrap}
+.crate .star{color:var(--pink);font-weight:800}
+.crate .cnt{color:#777}
+.cloc{display:flex;align-items:center;gap:6px;font-size:13px;color:#666}
+
+/* sticky tabs */
+.tabs{position:sticky;top:0;z-index:90;display:flex;background:#fff;border-bottom:1px solid #EEE;box-shadow:0 2px 6px rgba(0,0,0,.03)}
+.tab{flex:1;text-align:center;padding:13px 4px;font-size:13.5px;font-weight:600;color:#999;cursor:pointer;border-bottom:2px solid transparent}
+.tab.active{color:var(--ink);border-bottom-color:var(--ink);font-weight:700}
+
+/* section */
+.sec{padding:18px 16px;display:none}
+.sec.active{display:block}
+.sec-h{font-size:17px;font-weight:800;margin-bottom:14px;display:flex;align-items:baseline;gap:7px}
+.sub-h{font-size:13px;font-weight:800;color:#999;letter-spacing:.04em;text-transform:uppercase;margin:22px 0 12px}
+.sub-h:first-child{margin-top:0}
+
+/* category chips */
+.cats{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;margin-bottom:6px;padding-bottom:2px}
+.cats::-webkit-scrollbar{display:none}
+.cat{flex:none;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:20px;background:#F4F4F4;color:#666;cursor:pointer;white-space:nowrap}
+.cat.active{background:var(--ink);color:#fff}
+
+/* product card (이미지 + 4개 정보) */
+.prod{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid #F2F2F2;cursor:pointer}
+.prod:last-child{border-bottom:none}
+.prod-img{width:64px;height:64px;border-radius:12px;flex-shrink:0;background:#E5E5E5}
+.prod-body{flex:1;min-width:0}
+.prod-name{font-size:14.5px;font-weight:600;line-height:1.35}
+.prod-right{text-align:right;flex-shrink:0;padding-left:4px}
+.prod-disc{font-size:13px;font-weight:800;color:var(--pink);margin-bottom:4px;white-space:nowrap}
+.prod-disc .was{font-size:12px;color:#BBB;text-decoration:line-through;font-weight:500;margin-left:8px}
+.prod-now{font-size:18px;font-weight:800;color:var(--ink);white-space:nowrap}
+.price-foot{font-size:11.5px;color:#999;margin-top:14px;text-align:right}
+
+/* review */
+.rev-platform-tabs{display:flex;gap:0;border:1px solid #EEE;border-radius:12px;overflow:hidden;margin-bottom:16px}
+.rpt{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 8px;cursor:pointer;background:#fff;font-size:13px;font-weight:700;color:#999;border-right:1px solid #EEE}
+.rpt:last-child{border-right:none}
+.rpt.active{background:var(--ink);color:#fff}
+.rpt .rpt-ic{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff}
+.rpt.active .rpt-ic{background:rgba(255,255,255,.25)}
+.rev-summary{display:flex;align-items:center;gap:14px;background:#F7F5F2;border-radius:14px;padding:14px;margin-bottom:14px}
+.rev-big{text-align:center;flex-shrink:0}
+.rev-big-num{font-size:36px;font-weight:800;line-height:1.15}
+.rev-big-stars{color:var(--pink);font-size:13px;margin-top:5px}
+.rev-big-cnt{font-size:11px;color:#999;margin-top:5px;white-space:nowrap}
+.rev-bars{flex:1;display:flex;flex-direction:column;gap:5px}
+.bar-row{display:flex;align-items:center;gap:6px;font-size:10.5px;color:#AAA}
+.bar-track{flex:1;height:5px;border-radius:3px;background:#E8E8E8}
+.bar-fill{height:100%;border-radius:3px;background:var(--pink)}
+.rev-panel{display:none}
+.rev-panel.active{display:block}
+.rev-card{padding:14px 0;border-bottom:1px solid #F2F2F2}
+.rev-card:last-child{border-bottom:none}
+.rev-card-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.rev-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.rev-meta{flex:1;min-width:0}
+.rev-author{font-size:13px;font-weight:700;line-height:1.3}
+.rev-sub{display:flex;align-items:center;gap:5px;margin-top:3px;flex-wrap:wrap}
+.rev-flag{font-size:13px}
+.rev-nation{font-size:11px;color:#999}
+.rev-dot{font-size:11px;color:#DDD}
+.rev-date{font-size:11px;color:#BBB}
+.rev-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.rev-stars{font-size:12px;color:var(--pink);font-weight:700;white-space:nowrap}
+.rev-src{font-size:10px;font-weight:800;padding:2px 7px;border-radius:20px;color:#fff}
+.rev-src.google{background:#4285F4}
+.rev-src.naver{background:#03C75A}
+.rev-text{font-size:13px;color:#444;line-height:1.6}
+.rev-see-all{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:14px;padding:12px;border:1px solid #EEE;border-radius:12px;font-size:13px;font-weight:700;color:#555;cursor:pointer;text-decoration:none}
+.rev-updated{font-size:11px;color:#CCC;margin-top:10px;text-align:center}
+
+/* doctor */
+.doc{display:flex;gap:13px;align-items:flex-start;margin-bottom:14px}
+.doc-ph{width:74px;height:74px;border-radius:14px;background:#E5E5E5;flex-shrink:0}
+.doc-name{font-size:16px;font-weight:800;margin-bottom:6px}
+.doc-line{font-size:12.5px;color:#555;line-height:1.5;display:flex;gap:9px;margin-bottom:6px}
+.doc-line .dl{color:#AAA;font-weight:700;flex-shrink:0;width:50px}
+.doc-msg{background:#F7F5F2;border-radius:12px;padding:13px 14px;font-size:13px;color:#444;line-height:1.6;font-style:italic;position:relative}
+.doc-msg .ql{font-size:13px;color:#999;font-style:normal;font-weight:800;margin-bottom:4px}
+
+/* info */
+.info-row{display:flex;gap:10px;font-size:13px;color:#444;padding:11px 0;border-bottom:1px solid #F4F4F4;align-items:flex-start}
+.info-row:last-child{border-bottom:none}
+.info-row .ic{width:18px;flex-shrink:0}
+.info-k{font-size:11px;font-weight:800;color:#AAA;letter-spacing:.03em;text-transform:uppercase;margin-bottom:4px}
+.contact-list a{display:block;font-size:14px;color:var(--ink);font-weight:700;text-decoration:none;margin-bottom:7px}
+.contact-list a:last-child{margin-bottom:0}
+.contact-list .ctag{font-size:11px;color:#999;font-weight:600;margin-right:6px}
+.map{height:150px;background:linear-gradient(135deg,#E8E4E0,#D4D0CC);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:5px;margin-top:6px;cursor:pointer}
+.map-ic{font-size:24px}
+.map-lb{font-size:12px;color:#888}
+
+/* bottom cta */
+.cta{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(255,255,255,.97);backdrop-filter:blur(8px);border-top:1px solid #EEE;padding:9px 12px 20px;z-index:100}
+.cta-lb{font-size:10px;font-weight:700;color:#999;text-align:center;margin-bottom:7px;letter-spacing:.04em}
+.cta-row{display:flex;gap:6px}
+.cta-btn{flex:1;border:none;border-radius:12px;font-family:inherit;font-size:11.5px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;padding:13px 1px;color:#fff;white-space:nowrap}
+.cta-wa{background:#25D366}
+.cta-wechat{background:#07C160}
+.cta-line{background:#06C755}
+.cta-kakao{background:#FAE100;color:#3A1D1D}
+
+.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%);background:#222;color:#fff;font-size:12px;padding:10px 16px;border-radius:24px;z-index:200;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90%;text-align:center}
+.toast.show{opacity:1}
+
+/* notice */
+.notice-card{background:#FFFBEB;border:1px solid #FDE68A;border-radius:14px;padding:18px 16px;margin-bottom:12px}
+.notice-card:last-child{margin-bottom:0}
+.notice-title-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.notice-badge{font-size:10px;font-weight:800;background:#F59E0B;color:#fff;padding:2px 8px;border-radius:20px;flex-shrink:0}
+.notice-title-text{font-size:15px;font-weight:800;flex:1;line-height:1.4}
+.notice-date{font-size:11px;color:#BBB;flex-shrink:0}
+.notice-body{font-size:13px;color:#555;line-height:1.7}
+
+/* single CTA button */
+.cta-main{width:100%;background:var(--ink);color:#fff;border:none;border-radius:14px;font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;padding:16px;letter-spacing:-.01em}
+
+/* channel sheet */
+.ch-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:150;opacity:0;pointer-events:none;transition:opacity .25s}
+.ch-overlay.open{opacity:1;pointer-events:auto}
+.ch-sheet{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:430px;background:#fff;border-radius:20px 20px 0 0;z-index:160;transition:transform .3s cubic-bezier(.4,0,.2,1);padding:14px 16px 36px}
+.ch-sheet.open{transform:translateX(-50%) translateY(0)}
+.ch-handle{width:36px;height:4px;background:#E5E5E5;border-radius:2px;margin:0 auto 18px}
+.ch-sheet-ttl{font-size:15px;font-weight:800;text-align:center;margin-bottom:14px}
+.ch-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:#F7F7F7;margin-bottom:8px;cursor:pointer;border:none;width:100%;font-family:inherit;text-align:left;transition:background .15s}
+.ch-item:last-child{margin-bottom:0}
+.ch-item:active{background:#EDEDED}
+.ch-item-ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ch-item-name{font-size:15px;font-weight:700;color:#222}
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-L7F8Q3CZMP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-L7F8Q3CZMP');
+</script>
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "x8ctilixkq");
+</script>
+</head>
+<body>
+<div class="phone">
+
+  <!-- top bar -->
+  <div class="topbar">
+    <div class="lang-pill">
+      <span class="lp active" id="lp-ko" onclick="setLang('ko',this)">한국어</span>
+      <span class="lp" id="lp-en" onclick="setLang('en',this)">EN</span>
+      <span class="lp" id="lp-ja" onclick="setLang('ja',this)">日本</span>
+      <span class="lp" id="lp-zh" onclick="setLang('zh',this)">中文</span>
+    </div>
+  </div>
+
+  <!-- image gallery (최대 6장, 자동 롤링) -->
+  <div class="gallery-wrap">
+    <div class="gallery" id="gallery">
+      <div class="gphoto"></div>
+      <div class="gphoto"></div>
+      <div class="gphoto"></div>
+      <div class="gphoto"></div>
+      <div class="gphoto"></div>
+      <div class="gphoto"></div>
+    </div>
+    <div class="gcount"><span id="gcur">1</span>/<span id="gtot">6</span></div>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <!-- clinic head -->
+  <div class="chead">
+    <div class="cname" id="cname-el" data-i18n="clinic_name">서울스킨랩</div>
+    <div class="crate">
+      <span class="star" id="rate-star-el">★ 4.9</span>
+      <span class="cnt" id="rate-cnt-el" data-i18n="reviews_n">1,847 reviews</span>
+    </div>
+    <div class="cloc">
+      📍 <span><b data-i18n="station" id="station-el">Gangnam Stn</b> · <span id="addr-el">서울 강남구 도산대로 153, 9F</span></span>
+    </div>
+  </div>
+
+  <!-- sticky tabs: Price / Review / Clinic / Notice(조건부) -->
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-target="sec-price" data-i18n="tab_price">Price</div>
+    <div class="tab" data-target="sec-review" data-i18n="tab_review">Review</div>
+    <div class="tab" data-target="sec-clinic" data-i18n="tab_clinic">Clinic</div>
+    <div class="tab" id="tab-notice" data-target="sec-notice" data-i18n="tab_notice" style="display:none">공지</div>
+  </div>
+
+  <!-- PRICE -->
+  <div class="sec active" id="sec-price">
+    <div class="sec-h"><span data-i18n="tab_price">Price</span></div>
+    <div class="cats">
+      <span class="cat active" data-cat="all" onclick="filterCat(this)" data-i18n="c_all">All</span>
+      <span class="cat" data-cat="lifting" onclick="filterCat(this)" data-i18n="c_lift">Lifting / RF</span>
+      <span class="cat" data-cat="skin" onclick="filterCat(this)" data-i18n="c_skin">Skin Booster</span>
+      <span class="cat" data-cat="botox" onclick="filterCat(this)" data-i18n="c_botox">Botox</span>
+      <span class="cat" data-cat="laser" onclick="filterCat(this)" data-i18n="c_laser">Laser</span>
+    </div>
+
+    <div id="prod-render">
+    <div class="prod" data-cat="skin" onclick="consult('Rejuran Healer 2cc')">
+      <div class="prod-img"></div>
+      <div class="prod-body">
+        <div class="prod-name">Rejuran Healer 2cc</div>
+        <div style="font-size:11.5px;color:#AAA;margin-top:3px" data-i18n="prod_rejuran_sub">DNA 재생 · 탄력 · 모공</div>
+      </div>
+      <div class="prod-right">
+        <div class="prod-disc">38%<span class="was">₩360,000</span></div>
+        <div class="prod-now">₩220,000</div>
+      </div>
+    </div>
+    <div class="prod" data-cat="lifting" onclick="consult('HIFU Ulthera 300 shots')">
+      <div class="prod-img"></div>
+      <div class="prod-body">
+        <div class="prod-name">HIFU Ulthera 300 shots</div>
+        <div style="font-size:11.5px;color:#AAA;margin-top:3px" data-i18n="prod_ulthera_sub">리프팅 · 윤곽 · 늘어짐 개선</div>
+      </div>
+      <div class="prod-right">
+        <div class="prod-disc">33%<span class="was">₩580,000</span></div>
+        <div class="prod-now">₩390,000</div>
+      </div>
+    </div>
+    <div class="prod" data-cat="lifting" onclick="consult('Thermage CPT Eye 75 shots')">
+      <div class="prod-img"></div>
+      <div class="prod-body">
+        <div class="prod-name">Thermage CPT Eye 75 shots</div>
+        <div style="font-size:11.5px;color:#AAA;margin-top:3px" data-i18n="prod_thermage_sub">눈가 RF · 처짐 개선 · 피부 탄력</div>
+      </div>
+      <div class="prod-right">
+        <div class="prod-disc">36%<span class="was">₩500,000</span></div>
+        <div class="prod-now">₩320,000</div>
+      </div>
+    </div>
+    <div class="prod" data-cat="laser" onclick="consult('Pico Toning Laser x3')">
+      <div class="prod-img"></div>
+      <div class="prod-body">
+        <div class="prod-name">Pico Toning Laser x3</div>
+        <div style="font-size:11.5px;color:#AAA;margin-top:3px" data-i18n="prod_pico_sub">잡티 · 미백 · 피부결 개선</div>
+      </div>
+      <div class="prod-right">
+        <div class="prod-disc">30%<span class="was">₩240,000</span></div>
+        <div class="prod-now">₩168,000</div>
+      </div>
+    </div>
+    <div class="prod" data-cat="botox" onclick="consult('Skin Botox Full Face')">
+      <div class="prod-img"></div>
+      <div class="prod-body">
+        <div class="prod-name">Skin Botox Full Face</div>
+        <div style="font-size:11.5px;color:#AAA;margin-top:3px" data-i18n="prod_botox_sub">모공 축소 · 피지 조절 · 잔주름</div>
+      </div>
+      <div class="prod-right">
+        <div class="prod-disc">40%<span class="was">₩200,000</span></div>
+        <div class="prod-now">₩120,000</div>
+      </div>
+    </div>
+    </div>
+
+    <div class="price-foot" data-i18n="vat_note">* All prices include VAT (10%)</div>
+  </div>
+
+  <!-- REVIEW: Google / Naver 탭 전환, 각 최신 10개 -->
+  <div class="sec" id="sec-review">
+    <div class="sec-h" data-i18n="tab_review">Review</div>
+
+    <!-- 플랫폼 탭 -->
+    <div class="rev-platform-tabs">
+      <div class="rpt active" onclick="switchPlatform('google',this)">
+        <div class="rpt-ic" style="background:#4285F4">G</div>
+        <span>Google</span>
+      </div>
+      <div class="rpt" onclick="switchPlatform('naver',this)">
+        <div class="rpt-ic" style="background:#03C75A">N</div>
+        <span>Naver</span>
+      </div>
+    </div>
+
+    <!-- Google -->
+    <div class="rev-panel active" id="panel-google">
+      <div class="rev-summary">
+        <div class="rev-big">
+          <div class="rev-big-num" id="google-rating-el">4.8</div>
+          <div class="rev-big-stars">★★★★★</div>
+          <div class="rev-big-cnt"><span id="google-count-el">3,847</span> <span data-i18n="reviews">reviews</span></div>
+        </div>
+        <div class="rev-bars">
+          <div class="bar-row">5★ <div class="bar-track"><div class="bar-fill" style="width:84%"></div></div></div>
+          <div class="bar-row">4★ <div class="bar-track"><div class="bar-fill" style="width:11%"></div></div></div>
+          <div class="bar-row">3★ <div class="bar-track"><div class="bar-fill" style="width:3%"></div></div></div>
+          <div class="bar-row">2★ <div class="bar-track"><div class="bar-fill" style="width:1%"></div></div></div>
+          <div class="bar-row">1★ <div class="bar-track"><div class="bar-fill" style="width:1%"></div></div></div>
+        </div>
+      </div>
+      <div id="cards-google"></div>
+      <a class="rev-see-all" onclick="consult('Google all reviews')">
+        <span style="font-size:16px">🔗</span> <span data-i18n="see_all_google">See all 3,421 reviews on Google</span>
+      </a>
+      <div class="rev-updated" data-i18n="rev_note">Reviews selected by clinic · Updated Jun 2026</div>
+    </div>
+
+    <!-- Naver -->
+    <div class="rev-panel" id="panel-naver">
+      <div class="rev-summary">
+        <div class="rev-big">
+          <div class="rev-big-num" id="naver-rating-el">4.7</div>
+          <div class="rev-big-stars">★★★★★</div>
+          <div class="rev-big-cnt"><span id="naver-count-el">2,104</span> <span data-i18n="reviews">reviews</span></div>
+        </div>
+        <div class="rev-bars">
+          <div class="bar-row">5★ <div class="bar-track"><div class="bar-fill" style="width:78%"></div></div></div>
+          <div class="bar-row">4★ <div class="bar-track"><div class="bar-fill" style="width:15%"></div></div></div>
+          <div class="bar-row">3★ <div class="bar-track"><div class="bar-fill" style="width:5%"></div></div></div>
+          <div class="bar-row">2★ <div class="bar-track"><div class="bar-fill" style="width:1%"></div></div></div>
+          <div class="bar-row">1★ <div class="bar-track"><div class="bar-fill" style="width:1%"></div></div></div>
+        </div>
+      </div>
+      <div id="cards-naver"></div>
+      <a class="rev-see-all" onclick="consult('Naver all reviews')">
+        <span style="font-size:16px">🔗</span> <span data-i18n="see_all_naver">See all 1,892 reviews on Naver</span>
+      </a>
+      <div class="rev-updated" data-i18n="rev_note">Reviews selected by clinic · Updated Jun 2026</div>
+    </div>
+  </div>
+
+  <!-- CLINIC (Doctor + Info 통합) -->
+  <div class="sec" id="sec-clinic">
+    <!-- Doctor -->
+    <div class="sub-h" data-i18n="sh_doctor">Doctor</div>
+    <div class="doc">
+      <div class="doc-ph"></div>
+      <div>
+        <div class="doc-name" id="doc-name-el" data-i18n="doc_name">박지영 원장 (Dr. Park Jiyoung)</div>
+        <div class="doc-line"><span class="dl" data-i18n="doc_edu_l">학력</span><span id="doc-edu-el" data-i18n="doc_edu">서울대학교 의학대학원 졸업 · 의학박사</span></div>
+        <div class="doc-line"><span class="dl" data-i18n="doc_spec_l">전문</span><span id="doc-spec-el" data-i18n="doc_spec">피부과 전문의 · 대한피부과학회 정회원</span></div>
+        <div class="doc-line"><span class="dl" data-i18n="doc_exp_l">경력</span><span id="doc-exp-el" data-i18n="doc_exp">전 삼성서울병원 피부과 · 미용피부과 임상 14년</span></div>
+      </div>
+    </div>
+    <div class="doc-msg">
+      <div class="ql" data-i18n="doc_msg_l">원장 한마디</div>
+      <span id="doc-msg-el" data-i18n="doc_msg">"외국에서 오신 환자분께 저는 시술 전에 반드시 세 가지를 약속드립니다. 정품 장비 사용, 추가 권유 없는 투명한 가격, 그리고 영어 통역이 가능한 1:1 상담입니다."</span>
+    </div>
+
+    <!-- Info -->
+    <div class="sub-h" data-i18n="sh_info">Clinic Info</div>
+    <div class="info-row">
+      <span class="ic">📞</span>
+      <div>
+        <div class="info-k" data-i18n="info_contact">Contact</div>
+        <div class="contact-list" id="contact-list-el">
+          <a href="tel:+82025127700"><span class="ctag" data-i18n="ph1">대표</span>+82-2-512-7700</a>
+          <a href="tel:+82025127701"><span class="ctag" data-i18n="ph2">예약</span>+82-2-512-7701</a>
+          <a href="tel:+821077325128"><span class="ctag" data-i18n="ph3">외국인 전용</span>+82-10-7732-5128</a>
+        </div>
+      </div>
+    </div>
+    <div class="info-row">
+      <span class="ic">🚇</span>
+      <div>
+        <div class="info-k" data-i18n="info_dir">How to get here</div>
+        <div id="dir-text-el" data-i18n="dir_text">Gangnam Stn (Line 2) Exit 2 → straight 3 min. Seoul Skin Lab Bldg, 4F. Paid parking available.</div>
+      </div>
+    </div>
+    <div class="info-row">
+      <span class="ic">🕙</span>
+      <div>
+        <div class="info-k" data-i18n="info_hours">Hours</div>
+        <div id="hours-text-el" data-i18n="hours_text">Mon–Fri 10:00–19:00 · Sat 10:00–16:00 · Sun closed</div>
+      </div>
+    </div>
+    <div class="info-row" style="border-bottom:none">
+      <span class="ic">🗺</span>
+      <div style="flex:1">
+        <div class="info-k" data-i18n="info_map">Map</div>
+        <div class="map" onclick="consult('Map')">
+          <div class="map-ic">🗺</div>
+          <div class="map-lb" data-i18n="view_map">View on Google Maps</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTICE (공지사항 ON일 때만 탭 노출) -->
+  <div class="sec" id="sec-notice">
+    <div class="sec-h"><span data-i18n="tab_notice">공지사항</span></div>
+    <div id="notice-items"></div>
+  </div>
+
+  <!-- bottom cta -->
+  <div class="cta">
+    <div class="cta-lb" data-i18n="cta_label">Free consultation · We reply within minutes</div>
+    <button class="cta-main" onclick="openChannelSheet()" data-i18n="cta_btn">SNS 상담하기</button>
+  </div>
+
+  <!-- channel sheet -->
+  <div class="ch-overlay" id="ch-overlay" onclick="closeChannelSheet()"></div>
+  <div class="ch-sheet" id="ch-sheet">
+    <div class="ch-handle"></div>
+    <div class="ch-sheet-ttl" data-i18n="ch_title">상담 채널 선택</div>
+    <div id="ch-item-list"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+/* 브랜드 컬러: localStorage 우선, 없으면 CSS 기본값(#C29F53) 유지 */
+(function(){
+  const c = localStorage.getItem('brandColor');
+  if(c) document.documentElement.style.setProperty('--pink', c);
+})();
+
+/* 채널 상태 (admin에서 동기화) */
+let channelStates = {
+  whatsapp: { on: true,  val: '' },
+  line:     { on: true,  val: '' },
+  kakao:    { on: true,  val: '' },
+  wechat:   { on: false, val: '' }
+};
+const CHANNEL_CONFIG = {
+  whatsapp: { label:'WhatsApp', color:'#25D366', textColor:'#fff', icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.975-1.418A9.96 9.96 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a7.96 7.96 0 0 1-4.076-1.117l-.292-.174-3.024.862.842-3.04-.19-.31A7.96 7.96 0 0 1 4 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"/></svg>' },
+  line:     { label:'LINE',      color:'#06C755', textColor:'#fff', icon:'<span style="font-size:16px;font-weight:900;color:#fff">L</span>' },
+  kakao:    { label:'KakaoTalk', color:'#FAE100', textColor:'#3A1D1D', icon:'<span style="font-size:14px;font-weight:900;color:#3A1D1D">K</span>' },
+  wechat:   { label:'WeChat',    color:'#07C160', textColor:'#fff', icon:'<span style="font-size:14px;font-weight:900;color:#fff">微</span>' }
+};
+
+/* admin 미리보기 패널에서 실시간 데이터 수신 */
+window.addEventListener('message', function(e){
+  if(e.data && e.data.type === 'setBrandColor'){
+    document.documentElement.style.setProperty('--pink', e.data.color);
+  }
+  if(e.data && e.data.type === 'setNotice'){
+    applyNotice(e.data);
+    localStorage.setItem('noticeSettings', JSON.stringify({
+      enabled: e.data.enabled,
+      title:   e.data.title,
+      content: e.data.content,
+      date:    e.data.date
+    }));
+  }
+  if(e.data && e.data.type === 'fullSync'){
+    applyFullSync(e.data.state);
+  }
+});
+
+/* ── admin 기본 정보 / 시술 / 의료진 등 실시간 동기화 ── */
+let lastSync=null;
+
+function renderProducts(products){
+  const root=document.getElementById('prod-render');
+  if(!root||!products) return;
+  root.innerHTML='';
+  products.forEach(p=>{
+    const hasDisc=p.sale>0&&p.orig>0&&p.sale<p.orig;
+    const div=document.createElement('div');
+    div.className='prod';
+    div.setAttribute('data-cat', p.cat||'all');
+    div.innerHTML='<div class="prod-img"></div><div class="prod-body"><div class="prod-name"></div></div><div class="prod-right"><div class="prod-disc"></div><div class="prod-now"></div></div>';
+    div.querySelector('.prod-name').textContent=p.name||'-';
+    const discEl=div.querySelector('.prod-disc');
+    if(hasDisc){
+      discEl.textContent=Math.round((1-p.sale/p.orig)*100)+'%';
+      const was=document.createElement('span');
+      was.className='was';
+      was.textContent='₩'+p.orig.toLocaleString();
+      discEl.appendChild(was);
+    } else {
+      discEl.textContent='–';
+    }
+    div.querySelector('.prod-now').textContent='₩'+(p.sale||0).toLocaleString();
+    div.addEventListener('click', ()=>consult(p.name||''));
+    root.appendChild(div);
+  });
+  const activeCat=document.querySelector('.cat.active')?.getAttribute('data-cat')||'all';
+  document.querySelectorAll('#prod-render .prod').forEach(p=>{
+    p.style.display=(activeCat==='all'||p.getAttribute('data-cat')===activeCat)?'flex':'none';
+  });
+}
+
+function setText(id,text){
+  const el=document.getElementById(id);
+  if(el && text!==undefined && text!==null && text!=='') el.textContent=text;
+}
+
+function applyFullSync(state){
+  if(!state) return;
+  lastSync=state;
+  setText('cname-el', state.name);
+  setText('addr-el', state.address);
+  setText('station-el', state.station);
+  if(state.rating) setText('rate-star-el', '★ '+state.rating);
+  if(state.reviewCount){
+    const el=document.getElementById('rate-cnt-el');
+    if(el) el.textContent = el.textContent.replace(/[\d,]+/, Number(state.reviewCount).toLocaleString());
+  }
+  setText('google-rating-el', state.googleRating);
+  setText('google-count-el', state.googleCount?Number(state.googleCount).toLocaleString():undefined);
+  setText('naver-rating-el', state.naverRating);
+  setText('naver-count-el', state.naverCount?Number(state.naverCount).toLocaleString():undefined);
+  if(state.products) renderProducts(state.products);
+  if(state.doctor){
+    setText('doc-name-el', state.doctor.name);
+    setText('doc-edu-el', state.doctor.edu);
+    setText('doc-spec-el', state.doctor.spec);
+    setText('doc-exp-el', state.doctor.exp);
+    setText('doc-msg-el', state.doctor.msg);
+  }
+  if(state.phones && state.phones.length){
+    const list=document.getElementById('contact-list-el');
+    if(list){
+      list.innerHTML='';
+      state.phones.forEach(p=>{
+        const a=document.createElement('a');
+        a.href='tel:'+(p.num||'').replace(/[^0-9+]/g,'');
+        const tag=document.createElement('span');
+        tag.className='ctag';
+        tag.textContent=p.tag||'';
+        a.appendChild(tag);
+        a.appendChild(document.createTextNode(p.num||''));
+        list.appendChild(a);
+      });
+    }
+  }
+  setText('dir-text-el', state.directions);
+  if(state.hours){
+    setText('hours-text-el', `평일 ${state.hours.weekday||''} · 토 ${state.hours.sat||''} · 일 ${state.hours.sun||''}`);
+  }
+  if(state.langs){
+    const map={en:'lp-en', ja:'lp-ja', zh:'lp-zh'};
+    let activeHidden=false;
+    Object.entries(map).forEach(([key,id])=>{
+      const pill=document.getElementById(id);
+      if(!pill) return;
+      const show=state.langs[key]!==false;
+      pill.style.display=show?'':'none';
+      if(!show && pill.classList.contains('active')) activeHidden=true;
+    });
+    if(activeHidden) setLang('ko', document.getElementById('lp-ko'));
+  }
+  if(state.channels){
+    channelStates = state.channels;
+  }
+}
+
+const I18N = {
+  ko:{
+    clinic_name:"서울스킨랩",
+    reviews_n:"후기 1,847개", station:"강남역",
+    tab_price:"가격", tab_review:"후기", tab_clinic:"클리닉", tab_notice:"공지사항",
+    c_all:"전체", c_lift:"리프팅 / RF", c_skin:"스킨부스터", c_botox:"보톡스", c_laser:"레이저",
+    vat_note:"* 모든 가격은 부가세(10%) 포함 · 상담 당일 추가 권유 없음",
+    reviews:"개",
+    see_all_google:"구글에서 후기 3,847개 전체 보기", see_all_naver:"네이버에서 후기 2,104개 전체 보기",
+    rev_note:"클리닉이 선별 · 2026년 6월 기준",
+    sh_doctor:"의료진",
+    doc_name:"박지영 원장",
+    doc_edu_l:"학력", doc_spec_l:"전문", doc_exp_l:"경력",
+    doc_edu:"서울대학교 의학대학원 졸업 · 의학박사",
+    doc_spec:"피부과 전문의 · 대한피부과학회 정회원",
+    doc_exp:"전 삼성서울병원 피부과 · 미용피부과 임상 14년",
+    doc_msg_l:"원장 한마디",
+    doc_msg:'"외국에서 오신 환자분께 저는 시술 전에 반드시 세 가지를 약속드립니다. 정품 장비 사용, 추가 권유 없는 투명한 가격, 그리고 영어 통역이 가능한 1:1 상담입니다."',
+    prod_rejuran_sub:"DNA 재생 · 탄력 · 모공",
+    prod_ulthera_sub:"리프팅 · 윤곽 · 늘어짐 개선",
+    prod_thermage_sub:"눈가 RF · 처짐 개선 · 피부 탄력",
+    prod_pico_sub:"잡티 · 미백 · 피부결 개선",
+    prod_botox_sub:"모공 축소 · 피지 조절 · 잔주름",
+    sh_info:"클리닉 정보", info_contact:"연락처", ph1:"대표", ph2:"예약", ph3:"외국인 전용",
+    info_dir:"오시는 길", dir_text:"2호선 강남역 3번 출구 → 도보 4분. 도산대로 153 서울스킨랩 빌딩 9층. 건물 내 주차 가능 (2시간 무료).",
+    info_hours:"진료시간", hours_text:"월~금 10:00–19:30 · 토 10:00–17:00 · 일·공휴일 휴무 · 마지막 예약 마감 1시간 전",
+    info_map:"지도", view_map:"구글 지도에서 보기",
+    cta_label:"무료 상담 · 평균 5분 내 답변",
+    cta_btn:"SNS 상담하기",
+    ch_title:"상담 채널 선택",
+    ch_redirect:"해당 채널로 이동됩니다",
+    toast:"데모: WhatsApp으로 이동 — '{x}에 관심이 있습니다'"
+  },
+  en:{
+    clinic_name:"Seoul Skin Lab",
+    reviews_n:"1,847 reviews", station:"Gangnam Stn",
+    tab_price:"Price", tab_review:"Review", tab_clinic:"Clinic", tab_notice:"Notice",
+    c_all:"All", c_lift:"Lifting / RF", c_skin:"Skin Booster", c_botox:"Botox", c_laser:"Laser",
+    vat_note:"* All prices include VAT (10%) · No upselling during consultation",
+    reviews:"reviews",
+    see_all_google:"See all 3,847 reviews on Google", see_all_naver:"See all 2,104 reviews on Naver",
+    rev_note:"Reviews curated by clinic · Updated Jun 2026",
+    sh_doctor:"Doctor",
+    doc_name:"Dr. Park Jiyoung",
+    doc_edu_l:"Edu", doc_spec_l:"Board", doc_exp_l:"Career",
+    doc_edu:"M.D., Seoul National University Graduate School of Medicine",
+    doc_spec:"Board-certified Dermatologist · Korean Dermatological Association",
+    doc_exp:"Former Samsung Seoul Hospital, Dermatology Dept. · 14 yrs in aesthetic dermatology",
+    doc_msg_l:"A word from the doctor",
+    doc_msg:'"Before any treatment, I commit to three things: verified genuine devices, fully transparent pricing with no add-ons, and a 1-on-1 consultation in English. For patients visiting from abroad, your trust is everything."',
+    prod_rejuran_sub:"DNA repair · elasticity · pore tightening",
+    prod_ulthera_sub:"HIFU lifting · jawline · sagging",
+    prod_thermage_sub:"Eye-area RF · lifting · skin tightening",
+    prod_pico_sub:"pigmentation · brightening · texture",
+    prod_botox_sub:"pore reduction · sebum control · fine lines",
+    sh_info:"Clinic Info", info_contact:"Contact", ph1:"Main", ph2:"Reservation", ph3:"Intl. Desk",
+    info_dir:"Getting here", dir_text:"Gangnam Stn (Line 2) Exit 3 → 4 min walk. Seoul Skin Lab Bldg 9F, 153 Dosan-daero. In-building parking (2 hrs free).",
+    info_hours:"Hours", hours_text:"Mon–Fri 10:00–19:30 · Sat 10:00–17:00 · Sun & holidays closed · Last appt. 1 hr before close",
+    info_map:"Map", view_map:"View on Google Maps",
+    cta_label:"Free consultation · Avg. reply within 5 min",
+    cta_btn:"Chat with us",
+    ch_title:"Choose a channel",
+    ch_redirect:"Redirecting to channel...",
+    toast:"Demo: opens WhatsApp — 'Hi, I'm interested in {x}'"
+  },
+  ja:{
+    clinic_name:"ソウルスキンラボ",
+    reviews_n:"口コミ1,847件", station:"江南駅",
+    tab_price:"料金", tab_review:"口コミ", tab_clinic:"クリニック", tab_notice:"お知らせ",
+    c_all:"すべて", c_lift:"リフティング / RF", c_skin:"スキンブースター", c_botox:"ボトックス", c_laser:"レーザー",
+    vat_note:"※ 表示価格はすべて税込（VAT 10%）・施術中の追加勧誘なし",
+    reviews:"件",
+    see_all_google:"Googleで3,847件の口コミをすべて見る", see_all_naver:"Naverで2,104件の口コミをすべて見る",
+    rev_note:"クリニックが選定・2026年6月更新",
+    sh_doctor:"担当医師",
+    doc_name:"朴知英 院長（Dr. Park Jiyoung）",
+    doc_edu_l:"学歴", doc_spec_l:"専門", doc_exp_l:"経歴",
+    doc_edu:"ソウル大学校 医学大学院 卒業（医学博士）",
+    doc_spec:"皮膚科専門医・大韓皮膚科学会 正会員",
+    doc_exp:"元サムスンソウル病院 皮膚科・美容皮膚科 14年",
+    doc_msg_l:"院長からのメッセージ",
+    doc_msg:'「施術前に必ず3つのことをお約束します。正規品の機器使用、追加勧誘のない明確な料金、そして日本語対応スタッフによる1対1のカウンセリングです。」',
+    prod_rejuran_sub:"DNA修復・弾力・毛穴ケア",
+    prod_ulthera_sub:"HIFUリフティング・輪郭・たるみ改善",
+    prod_thermage_sub:"目元RF・たるみ改善・ハリアップ",
+    prod_pico_sub:"シミ・美白・キメ改善",
+    prod_botox_sub:"毛穴縮小・皮脂コントロール・小ジワ",
+    sh_info:"クリニック情報", info_contact:"連絡先", ph1:"代表", ph2:"予約", ph3:"外国人窓口",
+    info_dir:"アクセス方法", dir_text:"江南駅（2号線）3番出口 → 徒歩4分。道山大路153 Seoul Skin Labビル9F。建物内駐車場あり（2時間無料）。",
+    info_hours:"診療時間", hours_text:"月〜金 10:00–19:30・土 10:00–17:00・日祝休・最終予約は終了1時間前まで",
+    info_map:"地図", view_map:"Googleマップで見る",
+    cta_label:"無料カウンセリング・平均5分以内に返信",
+    cta_btn:"SNSで相談する",
+    ch_title:"チャネルを選択",
+    ch_redirect:"チャネルへ移動します",
+    toast:"デモ：WhatsAppが開きます「{x}に興味があります」"
+  },
+  zh:{
+    clinic_name:"首尔皮肤实验室",
+    reviews_n:"1,847条评价", station:"江南站",
+    tab_price:"价格", tab_review:"评价", tab_clinic:"诊所", tab_notice:"公告",
+    c_all:"全部", c_lift:"提升 / RF", c_skin:"水光针", c_botox:"肉毒素", c_laser:"激光",
+    vat_note:"※ 所有价格均含税（VAT 10%）· 诊疗中无额外推销",
+    reviews:"条评价",
+    see_all_google:"在谷歌查看全部3,847条评价", see_all_naver:"在Naver查看全部2,104条评价",
+    rev_note:"由诊所筛选展示 · 2026年6月更新",
+    sh_doctor:"主诊医生",
+    doc_name:"朴知英院长（Dr. Park Jiyoung）",
+    doc_edu_l:"学历", doc_spec_l:"专业", doc_exp_l:"经历",
+    doc_edu:"首尔大学医学研究生院 医学博士",
+    doc_spec:"皮肤科专科医师 · 韩国皮肤科学会正式会员",
+    doc_exp:"前三星首尔医院皮肤科 · 美容皮肤科从业14年",
+    doc_msg_l:"医生寄语",
+    doc_msg:'"治疗前，我承诺做到三点：使用正品设备、价格完全透明不加码，以及提供中文客服的一对一咨询。来自海外的患者，您的信任对我而言最重要。"',
+    prod_rejuran_sub:"DNA修复 · 弹力 · 毛孔改善",
+    prod_ulthera_sub:"HIFU提升 · 轮廓 · 改善松弛",
+    prod_thermage_sub:"眼周RF · 提拉 · 紧致肌肤",
+    prod_pico_sub:"色斑 · 美白 · 改善肤质",
+    prod_botox_sub:"缩小毛孔 · 控油 · 细纹改善",
+    sh_info:"诊所信息", info_contact:"联系方式", ph1:"总机", ph2:"预约", ph3:"外国人专线",
+    info_dir:"到院方式", dir_text:"江南站（2号线）3号出口 → 步行4分钟。道山大路153号 Seoul Skin Lab大厦9层。楼内停车（前2小时免费）。",
+    info_hours:"门诊时间", hours_text:"周一至周五 10:00–19:30 · 周六 10:00–17:00 · 周日及法定假日休息 · 最晚预约截止为闭诊前1小时",
+    info_map:"地图", view_map:"在谷歌地图查看",
+    cta_label:"免费咨询 · 平均5分钟内回复",
+    cta_btn:"SNS咨询",
+    ch_title:"选择咨询渠道",
+    ch_redirect:"正在跳转至该渠道",
+    toast:"演示：将打开WhatsApp — '我对{x}感兴趣'"
+  }
+};
+
+let currentLang='ko';
+function setLang(lang,el){
+  currentLang=lang;
+  document.documentElement.lang=lang;
+  document.querySelectorAll('.lang-pill .lp').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const d=I18N[lang];
+  document.querySelectorAll('[data-i18n]').forEach(n=>{const k=n.getAttribute('data-i18n');if(d[k]!==undefined)n.textContent=d[k];});
+  if(lastSync) applyFullSync(lastSync);
+}
+
+/* ── 리뷰 데이터 ── */
+const REVIEWS = {
+  google: [
+    { init:'S', color:'#4285F4', author:'Sarah K.',   date:'Jun 2026', stars:5, flag:'🇬🇧', nation:'UK',        text:'"Consultation was entirely in English and came out exactly at the quoted price — not a penny more. The doctor actually steered me away from a more expensive option. That kind of honesty is rare."' },
+    { init:'M', color:'#DB4437', author:'Maria L.',   date:'Jun 2026', stars:5, flag:'🇺🇸', nation:'USA',       text:'"First time getting a skin procedure in Korea. Staff was incredibly patient and kind. Zero hidden fees, zero pressure. They explained every step before touching me. 10/10."' },
+    { init:'Y', color:'#2980B9', author:'Yuna M.',    date:'Jun 2026', stars:5, flag:'🇯🇵', nation:'Japan',     text:'"受付スタッフが日本語で対応してくれて安心しました。リジュラン施術前に全料金を説明していただき、追加費用も一切なし。2回目も必ずここに来ます。"' },
+    { init:'A', color:'#7B68EE', author:'Aisha R.',   date:'May 2026', stars:5, flag:'🇸🇬', nation:'Singapore', text:'"Came for Ulthera HIFU. Dr. Park walked me through every step, confirmed I was comfortable before each pass, and the results after 3 weeks are genuinely impressive. Very professional team."' },
+    { init:'L', color:'#20B2AA', author:'Lily C.',    date:'May 2026', stars:5, flag:'🇦🇺', nation:'Australia', text:'"Already booked my second appointment. The Rejuran Healer results at the 2-week mark are incredible — pores visibly tighter and skin texture smoothed. English-speaking staff made everything easy."' },
+    { init:'J', color:'#F4B400', author:'James T.',   date:'Apr 2026', stars:4, flag:'🇨🇦', nation:'Canada',    text:'"Excellent clinic. Waited about 15 min past my slot, but once in the chair the experience was flawless. English communication was smooth and the Thermage result on my eye area is noticeable."' },
+    { init:'R', color:'#9B59B6', author:'Rachel P.',  date:'Apr 2026', stars:5, flag:'🇺🇸', nation:'USA',       text:'"Pico Laser results are beyond what I expected. No upselling, no surprise charges on checkout. The itemized receipt matched everything they quoted up front. Will absolutely be back."' },
+    { init:'N', color:'#16A085', author:'Nadia V.',   date:'Mar 2026', stars:4, flag:'🇫🇷', nation:'France',    text:'"Staff communicated in English very well. A little hard to find the entrance the first time, but the clinic itself is spotless and modern. Skin Botox smoothed my texture noticeably."' },
+    { init:'E', color:'#E67E22', author:'Emma S.',    date:'Mar 2026', stars:5, flag:'🇬🇧', nation:'UK',        text:'"Dropped in without a reservation and was seen the same day. Pricing was fully transparent, the doctor spoke clear English and explained the difference between Ulthera and Thermage patiently."' },
+    { init:'C', color:'#27AE60', author:'Clara W.',   date:'Feb 2026', stars:5, flag:'🇩🇪', nation:'Germany',   text:'"Clean, modern, honest. The doctor spent 20 minutes explaining my skin concerns before recommending any treatment. Pricing matched exactly. No factory-clinic vibes — genuinely personalised."' },
+  ],
+  naver: [
+    { init:'김', color:'#03C75A', author:'kim****', flag:'🇰🇷', nation:'Korea', date:'Jun 2026', stars:5, text:'"외국인 친구 데리고 왔는데 영어 직원이 처음부터 끝까지 통역해줘서 너무 편했어요. 리쥬란 힐러 효과도 확실하고 다음엔 울쎄라도 해볼 예정이에요."' },
+    { init:'이', color:'#03C75A', author:'lee****', flag:'🇰🇷', nation:'Korea', date:'Jun 2026', stars:5, text:'"리쥬란 힐러 2cc 시술 후기예요. 처음에 안내받은 22만원 그대로 나왔고 추가 권유 일절 없었어요. 정직한 클리닉 찾으셨으면 여기 강추합니다."' },
+    { init:'박', color:'#03C75A', author:'park****',flag:'🇰🇷', nation:'Korea', date:'May 2026', stars:4, text:'"울쎄라 300샷 받고 왔어요. 대기가 20분 정도 있었지만 원장님이 직접 시술해주셔서 믿음직했어요. 3주 지난 지금 리프팅 효과 선명하게 느껴져요."' },
+    { init:'최', color:'#03C75A', author:'choi****',flag:'🇰🇷', nation:'Korea', date:'May 2026', stars:5, text:'"써마지 CPT 눈가 시술 받았어요. 처진 눈꼬리가 고민이었는데 2주 후부터 확실히 올라가는 게 느껴졌어요. 가격 설명 친절하고 추가 권유도 없었어요."' },
+    { init:'정', color:'#03C75A', author:'jung****',flag:'🇰🇷', nation:'Korea', date:'Apr 2026', stars:5, text:'"피코 레이저 3회 패키지 완료 후기예요. 잡티가 많이 옅어졌고 피부결이 확실히 좋아졌어요. 세금환급도 친절하게 도와주셔서 감사했습니다."' },
+    { init:'강', color:'#03C75A', author:'kang****',flag:'🇰🇷', nation:'Korea', date:'Apr 2026', stars:5, text:'"외국인 환자가 많은 클리닉이라 글로벌 서비스가 잘 돼 있어요. 스킨보톡스 맞고 피지 조절이 확실히 되는 느낌이에요. 원장님도 직접 설명해줘서 신뢰가 갔어요."' },
+    { init:'조', color:'#03C75A', author:'cho****', flag:'🇰🇷', nation:'Korea', date:'Mar 2026', stars:4, text:'"스킨보톡스 시술 후 모공이 눈에 띄게 줄었어요. 대기 시간이 조금 있었지만 그만큼 환자가 많다는 뜻이겠죠. 다음엔 리쥬란 예약해뒀어요."' },
+    { init:'윤', color:'#03C75A', author:'yoon****',flag:'🇰🇷', nation:'Korea', date:'Mar 2026', stars:5, text:'"일본인 친구가 먼저 다녀오고 추천해줘서 왔는데 외국인 응대 시스템이 정말 잘 돼있어요. 원장 직접 시술, 정가 청구, 영어 상담 모두 기대 이상이었어요."' },
+    { init:'임', color:'#03C75A', author:'lim****', flag:'🇰🇷', nation:'Korea', date:'Feb 2026', stars:5, text:'"울쎄라 정품 장비 맞는지 궁금해서 시리얼 번호 확인 부탁드렸는데 바로 확인해줬어요. 정직하고 투명한 운영 방식이 마음에 들었어요. 리프팅 효과도 만족해요."' },
+    { init:'한', color:'#03C75A', author:'han****', flag:'🇰🇷', nation:'Korea', date:'Feb 2026', stars:5, text:'"혼자 방문했는데 상담실에서 원장님이 직접 피부 체크하고 필요한 시술만 추천해주셨어요. 억지로 패키지 끼워팔기 없는 클리닉 찾으신다면 여기 완전 추천이에요."' },
+  ]
+};
+
+const STAR_MAP = { 5:'★★★★★', 4:'★★★★☆', 3:'★★★☆☆', 2:'★★☆☆☆', 1:'★☆☆☆☆' };
+
+function renderReviews(platform) {
+  const list = REVIEWS[platform];
+  const srcClass = platform;
+  const srcLabel = platform === 'google' ? 'Google' : 'Naver';
+  const html = list.map(r => `
+    <div class="rev-card">
+      <div class="rev-card-top">
+        <div class="rev-avatar" style="background:${r.color}">${r.init}</div>
+        <div class="rev-meta">
+          <div class="rev-author">${r.author}</div>
+          <div class="rev-sub">
+            ${r.flag ? `<span class="rev-flag">${r.flag}</span><span class="rev-nation">${r.nation}</span><span class="rev-dot">·</span>` : ''}
+            <span class="rev-date">${r.date}</span>
+          </div>
+        </div>
+        <div class="rev-right">
+          <div class="rev-stars">${STAR_MAP[r.stars]}</div>
+          <span class="rev-src ${srcClass}">${srcLabel}</span>
+        </div>
+      </div>
+      <div class="rev-text">${r.text}</div>
+    </div>`).join('');
+  document.getElementById('cards-' + platform).innerHTML = html;
+}
+
+function switchPlatform(id,el){
+  document.querySelectorAll('.rpt').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.rev-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+}
+
+function filterCat(el){
+  document.querySelectorAll('.cat').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  const cat=el.getAttribute('data-cat');
+  document.querySelectorAll('.prod').forEach(p=>{
+    p.style.display=(cat==='all'||p.getAttribute('data-cat')===cat)?'flex':'none';
+  });
+}
+
+let toastTimer;
+function consult(what){
+  openChannelSheet();
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+function openChannelSheet(){
+  const list=document.getElementById('ch-item-list');
+  list.innerHTML='';
+  const active=Object.entries(channelStates).filter(([,v])=>v.on!==false);
+  active.forEach(([key])=>{
+    const cfg=CHANNEL_CONFIG[key];
+    if(!cfg) return;
+    const btn=document.createElement('button');
+    btn.className='ch-item';
+    btn.innerHTML=`<div class="ch-item-ic" style="background:${cfg.color}">${cfg.icon}</div><span class="ch-item-name">${cfg.label}</span>`;
+    btn.addEventListener('click',()=>selectChannel(key));
+    list.appendChild(btn);
+  });
+  if(!active.length){
+    list.innerHTML='<div style="text-align:center;color:#AAA;font-size:13px;padding:16px">활성화된 채널이 없습니다</div>';
+  }
+  document.getElementById('ch-overlay').classList.add('open');
+  document.getElementById('ch-sheet').classList.add('open');
+}
+
+function closeChannelSheet(){
+  document.getElementById('ch-overlay').classList.remove('open');
+  document.getElementById('ch-sheet').classList.remove('open');
+}
+
+function selectChannel(key){
+  closeChannelSheet();
+  const msg=I18N[currentLang].ch_redirect||'해당 채널로 이동됩니다';
+  showToast(msg);
+  // 실제 서비스: 채널별 URL로 이동
+}
+
+/* gallery: dots + count + auto rolling */
+(function(){
+  const g=document.getElementById('gallery');
+  const slides=g.children.length;
+  document.getElementById('gtot').textContent=slides;
+  const dotsBox=document.getElementById('dots');
+  for(let i=0;i<slides;i++){const d=document.createElement('div');d.className='dot'+(i===0?' active':'');dotsBox.appendChild(d);}
+  const dots=[...dotsBox.children];
+  let idx=0,userInteracting=false,interactTimer;
+  function update(){
+    idx=Math.round(g.scrollLeft/g.clientWidth);
+    dots.forEach((d,i)=>d.classList.toggle('active',i===idx));
+    document.getElementById('gcur').textContent=idx+1;
+  }
+  g.addEventListener('scroll',()=>{
+    update();
+    userInteracting=true;clearTimeout(interactTimer);
+    interactTimer=setTimeout(()=>userInteracting=false,4000);
+  },{passive:true});
+  setInterval(()=>{
+    if(userInteracting)return;
+    const next=(idx+1)%slides;
+    g.scrollTo({left:next*g.clientWidth,behavior:'smooth'});
+  },3000);
+})();
+
+/* 탭 패널 전환 — 스크롤 없이 콘텐츠만 교체 */
+const tabs=[...document.querySelectorAll('.tab')];
+tabs.forEach(tab=>tab.addEventListener('click',()=>{
+  tabs.forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.getElementById(tab.getAttribute('data-target')).classList.add('active');
+}));
+
+/* 리뷰 초기 렌더 */
+renderReviews('google');
+renderReviews('naver');
+
+/* 공지사항 */
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function applyNotice(settings){
+  const tab=document.getElementById('tab-notice');
+  const items=document.getElementById('notice-items');
+  if(!settings||!settings.enabled||!settings.title){
+    tab.style.display='none';
+    // 현재 공지탭이 활성화돼 있으면 가격 탭으로 이동
+    if(document.getElementById('sec-notice').classList.contains('active')){
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+      document.querySelector('.tab[data-target="sec-price"]').classList.add('active');
+      document.getElementById('sec-price').classList.add('active');
+    }
+    return;
+  }
+  tab.style.display='';
+  const dateHtml=settings.date?`<span class="notice-date">${escHtml(settings.date)}</span>`:'';
+  const bodyHtml=escHtml(settings.content||'').replace(/\n/g,'<br>');
+  items.innerHTML=`
+    <div class="notice-card">
+      <div class="notice-title-row">
+        <span class="notice-badge">공지</span>
+        <span class="notice-title-text">${escHtml(settings.title)}</span>
+        ${dateHtml}
+      </div>
+      <div class="notice-body">${bodyHtml}</div>
+    </div>`;
+}
+
+/* 공지사항 localStorage 초기화 (없으면 데모 기본값 표시) */
+(function(){
+  const saved=localStorage.getItem('noticeSettings');
+  if(saved){
+    try{applyNotice(JSON.parse(saved));}catch(e){}
+  } else {
+    applyNotice({
+      enabled:true,
+      title:'7월 외국인 환자 프로모션 안내',
+      content:'안녕하세요, 서울스킨랩입니다.\n7월 한 달간 외국인 환자분들을 위해 리쥬란 힐러 2cc + 스킨보톡스 풀페이스를 묶음가 290,000원에 진행합니다 (정가 420,000원).\n\n예약하실 때 카카오톡, 라인, 왓츠앱 중 편하신 채널로 "7월 이벤트 보고 왔어요"라고 말씀해 주시면 바로 안내드립니다.\n선착순으로 진행되니 빠른 예약 추천드립니다.',
+      date:'2026.7.1 ~ 2026.7.31'
+    });
+  }
+})();
+
+/* 기본 언어: 한국어 (버튼을 누르기 전까지 항상 한국어로 표시) */
+setLang('ko', document.querySelector('.lang-pill .lp.active'));
+</script>
+</body>
+</html>
