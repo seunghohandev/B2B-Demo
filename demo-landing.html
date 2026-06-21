@@ -103,9 +103,19 @@ body{font-family:'DM Sans','Noto Sans JP','Noto Sans SC',sans-serif;background:#
 .rev-see-all{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:14px;padding:12px;border:1px solid #EEE;border-radius:12px;font-size:13px;font-weight:700;color:#555;cursor:pointer;text-decoration:none}
 .rev-updated{font-size:11px;color:#CCC;margin-top:10px;text-align:center}
 
+/* promo */
+.promo-wrap{background:linear-gradient(135deg,#FFFBF0,#FFF7E6);border:1px solid #FFE0A0;border-radius:14px;padding:16px;margin-bottom:18px}
+.promo-hd{font-size:13.5px;font-weight:800;color:var(--pink);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.promo-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(0,0,0,.06);cursor:pointer}
+.promo-item:last-child{border-bottom:none}
+.promo-cat{font-size:10px;font-weight:700;background:rgba(194,159,83,.15);color:var(--pink);padding:2px 7px;border-radius:8px;flex-shrink:0;white-space:nowrap}
+.promo-name{flex:1;font-size:13px;font-weight:600;color:#222;min-width:0}
+.promo-price{font-size:15px;font-weight:800;color:var(--pink);flex-shrink:0;white-space:nowrap}
+.promo-divider{font-size:11.5px;font-weight:700;color:#AAA;letter-spacing:.05em;text-transform:uppercase;margin:18px 0 10px;padding-bottom:8px;border-bottom:1px solid #F2F2F2}
+
 /* doctor */
-.doc{display:flex;gap:13px;align-items:flex-start;margin-bottom:14px}
-.doc-ph{width:74px;height:74px;border-radius:14px;background:#E5E5E5;flex-shrink:0}
+.doc{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+.doc-ph{width:100px;height:130px;border-radius:14px;background:#E5E5E5;flex-shrink:0;background-size:cover;background-position:top center}
 .doc-name{font-size:16px;font-weight:800;margin-bottom:6px}
 .doc-line{font-size:12.5px;color:#555;line-height:1.5;display:flex;gap:9px;margin-bottom:6px}
 .doc-line .dl{color:#AAA;font-weight:700;flex-shrink:0;width:50px}
@@ -175,7 +185,7 @@ body{font-family:'DM Sans','Noto Sans JP','Noto Sans SC',sans-serif;background:#
         c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
         t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "x8smnbyp3q");
+    })(window, document, "clarity", "script", "x8ctilixkq");
 </script>
 </head>
 <body>
@@ -194,14 +204,13 @@ body{font-family:'DM Sans','Noto Sans JP','Noto Sans SC',sans-serif;background:#
   <!-- image gallery (최대 6장, 자동 롤링) -->
   <div class="gallery-wrap">
     <div class="gallery" id="gallery">
-      <div class="gphoto"></div>
-      <div class="gphoto"></div>
-      <div class="gphoto"></div>
-      <div class="gphoto"></div>
-      <div class="gphoto"></div>
-      <div class="gphoto"></div>
+      <div class="gphoto" style="background:url('images/1.jpg') center/cover no-repeat"></div>
+      <div class="gphoto" style="background:url('images/2.jpg') center/cover no-repeat"></div>
+      <div class="gphoto" style="background:url('images/3.jpg') center/cover no-repeat"></div>
+      <div class="gphoto" style="background:url('images/4.jpg') center/cover no-repeat"></div>
+      <div class="gphoto" style="background:url('images/5.jpg') center/cover no-repeat"></div>
     </div>
-    <div class="gcount"><span id="gcur">1</span>/<span id="gtot">6</span></div>
+    <div class="gcount"><span id="gcur">1</span>/<span id="gtot">5</span></div>
     <div class="dots" id="dots"></div>
   </div>
 
@@ -219,7 +228,7 @@ body{font-family:'DM Sans','Noto Sans JP','Noto Sans SC',sans-serif;background:#
 
   <!-- sticky tabs: Price / Review / Clinic / Notice(조건부) -->
   <div class="tabs" id="tabs">
-    <div class="tab active" data-target="sec-price" data-i18n="tab_price">Price</div>
+    <div class="tab active" data-target="sec-price" data-i18n="tab_price">가격/프로모션</div>
     <div class="tab" data-target="sec-review" data-i18n="tab_review">Review</div>
     <div class="tab" data-target="sec-clinic" data-i18n="tab_clinic">Clinic</div>
     <div class="tab" id="tab-notice" data-target="sec-notice" data-i18n="tab_notice" style="display:none">공지</div>
@@ -227,7 +236,39 @@ body{font-family:'DM Sans','Noto Sans JP','Noto Sans SC',sans-serif;background:#
 
   <!-- PRICE -->
   <div class="sec active" id="sec-price">
-    <div class="sec-h"><span data-i18n="tab_price">Price</span></div>
+    <div class="sec-h"><span data-i18n="tab_price">가격/프로모션</span></div>
+
+    <!-- 프로모션 -->
+    <div class="promo-wrap">
+      <div class="promo-hd" data-i18n="promo_hd">🎁 이달의 프로모션</div>
+      <div class="promo-item" onclick="consult('V라인 턱보톡스')">
+        <span class="promo-cat" data-i18n="promo_cat1">보톡스</span>
+        <span class="promo-name" data-i18n="promo_name1">V라인 턱보톡스</span>
+        <span class="promo-price">₩49,000</span>
+      </div>
+      <div class="promo-item" onclick="consult('리쥬란 스킨 리바이탈 프로그램')">
+        <span class="promo-cat" data-i18n="promo_cat2">스킨부스터</span>
+        <span class="promo-name" data-i18n="promo_name2">리쥬란 스킨 리바이탈 프로그램</span>
+        <span class="promo-price">₩340,000</span>
+      </div>
+      <div class="promo-item" onclick="consult('프리미엄 볼륨 필러 1cc')">
+        <span class="promo-cat" data-i18n="promo_cat3">필러</span>
+        <span class="promo-name" data-i18n="promo_name3">프리미엄 볼륨 필러 1cc</span>
+        <span class="promo-price">₩279,000</span>
+      </div>
+      <div class="promo-item" onclick="consult('스컬트라 콜라겐 재생 프로그램')">
+        <span class="promo-cat" data-i18n="promo_cat4">콜라겐부스터</span>
+        <span class="promo-name" data-i18n="promo_name4">스컬트라 콜라겐 재생 프로그램</span>
+        <span class="promo-price">₩580,000</span>
+      </div>
+      <div class="promo-item" onclick="consult('울쎄라 프라임 리프팅 300샷')">
+        <span class="promo-cat" data-i18n="promo_cat5">리프팅</span>
+        <span class="promo-name" data-i18n="promo_name5">울쎄라 프라임 리프팅 300샷</span>
+        <span class="promo-price">₩1,090,000</span>
+      </div>
+    </div>
+
+    <div class="promo-divider" data-i18n="promo_divider">시술 가격 목록</div>
     <div class="cats">
       <span class="cat active" data-cat="all" onclick="filterCat(this)" data-i18n="c_all">All</span>
       <span class="cat" data-cat="lifting" onclick="filterCat(this)" data-i18n="c_lift">Lifting / RF</span>
@@ -238,7 +279,6 @@ body{font-family:'DM Sans','Noto Sans JP','Noto Sans SC',sans-serif;background:#
 
     <div id="prod-render">
     <div class="prod" data-cat="skin" onclick="consult('Rejuran Healer 2cc')">
-      <div class="prod-img"></div>
       <div class="prod-body">
         <div class="prod-name">Rejuran Healer 2cc</div>
         <div style="font-size:11.5px;color:#AAA;margin-top:3px" data-i18n="prod_rejuran_sub">DNA 재생 · 탄력 · 모공</div>
@@ -249,7 +289,6 @@ body{font-family:'DM Sans','Noto Sans JP','Noto Sans SC',sans-serif;background:#
       </div>
     </div>
     <div class="prod" data-cat="lifting" onclick="consult('HIFU Ulthera 300 shots')">
-      <div class="prod-img"></div>
       <div class="prod-body">
         <div class="prod-name">HIFU Ulthera 300 shots</div>
         <div style="font-size:11.5px;color:#AAA;margin-top:3px" data-i18n="prod_ulthera_sub">리프팅 · 윤곽 · 늘어짐 개선</div>
@@ -260,7 +299,6 @@ body{font-family:'DM Sans','Noto Sans JP','Noto Sans SC',sans-serif;background:#
       </div>
     </div>
     <div class="prod" data-cat="lifting" onclick="consult('Thermage CPT Eye 75 shots')">
-      <div class="prod-img"></div>
       <div class="prod-body">
         <div class="prod-name">Thermage CPT Eye 75 shots</div>
         <div style="font-size:11.5px;color:#AAA;margin-top:3px" data-i18n="prod_thermage_sub">눈가 RF · 처짐 개선 · 피부 탄력</div>
@@ -271,7 +309,6 @@ body{font-family:'DM Sans','Noto Sans JP','Noto Sans SC',sans-serif;background:#
       </div>
     </div>
     <div class="prod" data-cat="laser" onclick="consult('Pico Toning Laser x3')">
-      <div class="prod-img"></div>
       <div class="prod-body">
         <div class="prod-name">Pico Toning Laser x3</div>
         <div style="font-size:11.5px;color:#AAA;margin-top:3px" data-i18n="prod_pico_sub">잡티 · 미백 · 피부결 개선</div>
@@ -282,7 +319,6 @@ body{font-family:'DM Sans','Noto Sans JP','Noto Sans SC',sans-serif;background:#
       </div>
     </div>
     <div class="prod" data-cat="botox" onclick="consult('Skin Botox Full Face')">
-      <div class="prod-img"></div>
       <div class="prod-body">
         <div class="prod-name">Skin Botox Full Face</div>
         <div style="font-size:11.5px;color:#AAA;margin-top:3px" data-i18n="prod_botox_sub">모공 축소 · 피지 조절 · 잔주름</div>
@@ -365,7 +401,7 @@ body{font-family:'DM Sans','Noto Sans JP','Noto Sans SC',sans-serif;background:#
     <!-- Doctor -->
     <div class="sub-h" data-i18n="sh_doctor">Doctor</div>
     <div class="doc">
-      <div class="doc-ph"></div>
+      <div class="doc-ph" style="background-image:url('images/6.jpg')"></div>
       <div>
         <div class="doc-name" id="doc-name-el" data-i18n="doc_name">박지영 원장 (Dr. Park Jiyoung)</div>
         <div class="doc-line"><span class="dl" data-i18n="doc_edu_l">학력</span><span id="doc-edu-el" data-i18n="doc_edu">서울대학교 의학대학원 졸업 · 의학박사</span></div>
@@ -409,9 +445,8 @@ body{font-family:'DM Sans','Noto Sans JP','Noto Sans SC',sans-serif;background:#
       <span class="ic">🗺</span>
       <div style="flex:1">
         <div class="info-k" data-i18n="info_map">Map</div>
-        <div class="map" onclick="consult('Map')">
-          <div class="map-ic">🗺</div>
-          <div class="map-lb" data-i18n="view_map">View on Google Maps</div>
+        <div style="border-radius:12px;overflow:hidden;margin-top:6px;height:160px">
+          <iframe src="https://maps.google.com/maps?q=37.497942,127.027689&z=16&output=embed" width="100%" height="160" style="border:0;display:block" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
       </div>
     </div>
@@ -492,7 +527,7 @@ function renderProducts(products){
     const div=document.createElement('div');
     div.className='prod';
     div.setAttribute('data-cat', p.cat||'all');
-    div.innerHTML='<div class="prod-img"></div><div class="prod-body"><div class="prod-name"></div></div><div class="prod-right"><div class="prod-disc"></div><div class="prod-now"></div></div>';
+    div.innerHTML='<div class="prod-body"><div class="prod-name"></div></div><div class="prod-right"><div class="prod-disc"></div><div class="prod-now"></div></div>';
     div.querySelector('.prod-name').textContent=p.name||'-';
     const discEl=div.querySelector('.prod-disc');
     if(hasDisc){
@@ -583,9 +618,12 @@ const I18N = {
   ko:{
     clinic_name:"서울스킨랩",
     reviews_n:"후기 1,847개", station:"강남역",
-    tab_price:"가격", tab_review:"후기", tab_clinic:"클리닉", tab_notice:"공지사항",
+    tab_price:"가격/프로모션", tab_review:"후기", tab_clinic:"클리닉", tab_notice:"공지사항",
     c_all:"전체", c_lift:"리프팅 / RF", c_skin:"스킨부스터", c_botox:"보톡스", c_laser:"레이저",
     vat_note:"* 모든 가격은 부가세(10%) 포함 · 상담 당일 추가 권유 없음",
+    promo_hd:"🎁 이달의 프로모션", promo_divider:"시술 가격 목록",
+    promo_cat1:"보톡스", promo_cat2:"스킨부스터", promo_cat3:"필러", promo_cat4:"콜라겐부스터", promo_cat5:"리프팅",
+    promo_name1:"V라인 턱보톡스", promo_name2:"리쥬란 스킨 리바이탈 프로그램", promo_name3:"프리미엄 볼륨 필러 1cc", promo_name4:"스컬트라 콜라겐 재생 프로그램", promo_name5:"울쎄라 프라임 리프팅 300샷",
     reviews:"개",
     see_all_google:"구글에서 후기 3,847개 전체 보기", see_all_naver:"네이버에서 후기 2,104개 전체 보기",
     rev_note:"클리닉이 선별 · 2026년 6월 기준",
@@ -615,9 +653,12 @@ const I18N = {
   en:{
     clinic_name:"Seoul Skin Lab",
     reviews_n:"1,847 reviews", station:"Gangnam Stn",
-    tab_price:"Price", tab_review:"Review", tab_clinic:"Clinic", tab_notice:"Notice",
+    tab_price:"Price / Promo", tab_review:"Review", tab_clinic:"Clinic", tab_notice:"Notice",
     c_all:"All", c_lift:"Lifting / RF", c_skin:"Skin Booster", c_botox:"Botox", c_laser:"Laser",
     vat_note:"* All prices include VAT (10%) · No upselling during consultation",
+    promo_hd:"🎁 This Month's Promo", promo_divider:"Treatment Price List",
+    promo_cat1:"Botox", promo_cat2:"Skin Booster", promo_cat3:"Filler", promo_cat4:"Collagen Booster", promo_cat5:"Lifting",
+    promo_name1:"V-line Jaw Botox", promo_name2:"Rejuran Skin Revital Program", promo_name3:"Premium Volume Filler 1cc", promo_name4:"Sculptra Collagen Regeneration Program", promo_name5:"Ulthera Prime Lifting 300 shots",
     reviews:"reviews",
     see_all_google:"See all 3,847 reviews on Google", see_all_naver:"See all 2,104 reviews on Naver",
     rev_note:"Reviews curated by clinic · Updated Jun 2026",
@@ -647,9 +688,12 @@ const I18N = {
   ja:{
     clinic_name:"ソウルスキンラボ",
     reviews_n:"口コミ1,847件", station:"江南駅",
-    tab_price:"料金", tab_review:"口コミ", tab_clinic:"クリニック", tab_notice:"お知らせ",
+    tab_price:"料金/プロモ", tab_review:"口コミ", tab_clinic:"クリニック", tab_notice:"お知らせ",
     c_all:"すべて", c_lift:"リフティング / RF", c_skin:"スキンブースター", c_botox:"ボトックス", c_laser:"レーザー",
     vat_note:"※ 表示価格はすべて税込（VAT 10%）・施術中の追加勧誘なし",
+    promo_hd:"🎁 今月のプロモーション", promo_divider:"施術料金一覧",
+    promo_cat1:"ボトックス", promo_cat2:"スキンブースター", promo_cat3:"フィラー", promo_cat4:"コラーゲン", promo_cat5:"リフティング",
+    promo_name1:"Vラインあごボトックス", promo_name2:"リジュランスキンリバイタルプログラム", promo_name3:"プレミアムボリュームフィラー1cc", promo_name4:"スカルプトラコラーゲン再生プログラム", promo_name5:"ウルセラプライムリフティング300ショット",
     reviews:"件",
     see_all_google:"Googleで3,847件の口コミをすべて見る", see_all_naver:"Naverで2,104件の口コミをすべて見る",
     rev_note:"クリニックが選定・2026年6月更新",
@@ -679,9 +723,12 @@ const I18N = {
   zh:{
     clinic_name:"首尔皮肤实验室",
     reviews_n:"1,847条评价", station:"江南站",
-    tab_price:"价格", tab_review:"评价", tab_clinic:"诊所", tab_notice:"公告",
+    tab_price:"价格/优惠", tab_review:"评价", tab_clinic:"诊所", tab_notice:"公告",
     c_all:"全部", c_lift:"提升 / RF", c_skin:"水光针", c_botox:"肉毒素", c_laser:"激光",
     vat_note:"※ 所有价格均含税（VAT 10%）· 诊疗中无额外推销",
+    promo_hd:"🎁 本月优惠活动", promo_divider:"施术价格列表",
+    promo_cat1:"肉毒素", promo_cat2:"水光针", promo_cat3:"填充剂", promo_cat4:"胶原蛋白", promo_cat5:"提升",
+    promo_name1:"V线下颌肉毒素", promo_name2:"利朱兰皮肤焕活疗程", promo_name3:"高端丰盈填充1cc", promo_name4:"塑然雅胶原蛋白再生疗程", promo_name5:"超声刀精华提升300发",
     reviews:"条评价",
     see_all_google:"在谷歌查看全部3,847条评价", see_all_naver:"在Naver查看全部2,104条评价",
     rev_note:"由诊所筛选展示 · 2026年6月更新",

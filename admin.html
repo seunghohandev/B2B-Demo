@@ -77,7 +77,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;b
 .img-slot{aspect-ratio:16/11;border:2px dashed #DDD;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:#BBB;font-size:12px;font-weight:600;transition:border .15s;position:relative;overflow:hidden;background:#FAFAFA}
 .img-slot:hover{border-color:var(--pink);color:var(--pink)}
 .img-slot .add-ic{font-size:22px}
-.img-slot.filled{border-style:solid;border-color:#DDD;background:var(--ph-bg)}
+.img-slot.filled{border-style:solid;border-color:#DDD;background-color:var(--ph-bg);background-size:cover;background-position:center}
 .img-slot.filled .slot-label{position:absolute;bottom:6px;left:6px;background:rgba(0,0,0,.45);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px}
 .img-slot .del-slot{display:none;position:absolute;top:5px;right:5px;width:20px;height:20px;background:rgba(0,0,0,.5);color:#fff;border-radius:50%;font-size:11px;align-items:center;justify-content:center;cursor:pointer}
 .img-slot.filled:hover .del-slot{display:flex}
@@ -131,10 +131,10 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;b
 .doc-card-name{font-size:14px;font-weight:700;color:var(--ink)}
 .doc-card-del{width:28px;height:28px;border-radius:8px;background:#F2F3F5;border:none;cursor:pointer;font-size:17px;color:#AAA;display:flex;align-items:center;justify-content:center;line-height:1}
 .doc-card-del:hover{background:#FFE5E5;color:#EF4444}
-.doc-layout{display:grid;grid-template-columns:100px 1fr;gap:18px;align-items:start}
-.doc-photo-slot{width:100px;height:100px;border:2px dashed #DDD;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:#BBB;font-size:11px;font-weight:600;text-align:center}
+.doc-layout{display:grid;grid-template-columns:130px 1fr;gap:18px;align-items:start}
+.doc-photo-slot{width:130px;height:155px;border:2px dashed #DDD;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:#BBB;font-size:11px;font-weight:600;text-align:center}
 .doc-photo-slot .ph-ic{font-size:28px}
-.doc-photo-slot.filled{border-style:solid;background:var(--ph-bg)}
+.doc-photo-slot.filled{border-style:solid;background-color:var(--ph-bg);background-size:cover;background-position:top center}
 
 /* 전화번호 */
 .phone-row{display:flex;gap:10px;align-items:end;margin-bottom:10px}
@@ -172,6 +172,15 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;b
 
 /* 섹션 구분선 */
 .divider{height:1px;background:var(--border);margin:18px 0}
+
+/* 프로모션 테이블 */
+.promo-tbl{width:100%;border-collapse:collapse;margin-top:4px}
+.promo-tbl th{font-size:11px;font-weight:700;color:#AAA;text-transform:uppercase;letter-spacing:.04em;padding:0 0 10px 0;border-bottom:2px solid var(--border);text-align:left}
+.promo-tbl th:last-child{text-align:right}
+.promo-tbl td{font-size:13px;padding:10px 0;border-bottom:1px solid #F4F4F4;vertical-align:middle}
+.promo-tbl tr:last-child td{border-bottom:none}
+.promo-cat-tag{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:10px;background:#FFF0F4;color:var(--pink)}
+.promo-price{font-size:14px;font-weight:800;color:var(--pink);text-align:right;white-space:nowrap}
 
 /* 상태 배지 */
 .status-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px}
@@ -285,7 +294,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;b
         c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
         t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "x8smnbyp3q");
+    })(window, document, "clarity", "script", "x8ctilixkq");
 </script>
 </head>
 <body>
@@ -315,7 +324,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;b
   <nav class="sidebar">
     <div class="nav-group">페이지 편집</div>
     <div class="nav-item active" data-sec="basic"    onclick="go(this)"><span class="ni">🏥</span> 기본 정보</div>
-    <div class="nav-item"        data-sec="price"    onclick="go(this)"><span class="ni">💰</span> 시술 / 가격</div>
+    <div class="nav-item"        data-sec="price"    onclick="go(this)"><span class="ni">💰</span> 가격/프로모션</div>
     <div class="nav-item"        data-sec="review"   onclick="go(this)"><span class="ni">⭐</span> 후기</div>
     <div class="nav-item"        data-sec="doctor"   onclick="go(this)"><span class="ni">👩‍⚕️</span> 의료진</div>
     <div class="nav-item"        data-sec="info"     onclick="go(this)"><span class="ni">📍</span> 클리닉 정보</div>
@@ -341,23 +350,23 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;b
           <span class="card-hint">최대 6장 · 권장 비율 16:11</span>
         </div>
         <div class="img-grid">
-          <div class="img-slot filled" onclick="imgClick(this)">
-            <div class="slot-label">대표</div>
+          <div class="img-slot filled" style="background-image:url('images/1.jpg')" onclick="imgClick(this)">
+            <div class="slot-label">대표 1</div>
             <div class="del-slot" onclick="delSlot(event,this)">×</div>
           </div>
-          <div class="img-slot filled" onclick="imgClick(this)">
+          <div class="img-slot filled" style="background-image:url('images/2.jpg')" onclick="imgClick(this)">
             <div class="slot-label">2</div>
             <div class="del-slot" onclick="delSlot(event,this)">×</div>
           </div>
-          <div class="img-slot filled" onclick="imgClick(this)">
+          <div class="img-slot filled" style="background-image:url('images/3.jpg')" onclick="imgClick(this)">
             <div class="slot-label">3</div>
             <div class="del-slot" onclick="delSlot(event,this)">×</div>
           </div>
-          <div class="img-slot filled" onclick="imgClick(this)">
+          <div class="img-slot filled" style="background-image:url('images/4.jpg')" onclick="imgClick(this)">
             <div class="slot-label">4</div>
             <div class="del-slot" onclick="delSlot(event,this)">×</div>
           </div>
-          <div class="img-slot filled" onclick="imgClick(this)">
+          <div class="img-slot filled" style="background-image:url('images/5.jpg')" onclick="imgClick(this)">
             <div class="slot-label">5</div>
             <div class="del-slot" onclick="delSlot(event,this)">×</div>
           </div>
@@ -429,10 +438,54 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;b
       </div>
     </div>
 
-    <!-- ② 시술 / 가격 -->
+    <!-- ② 가격 / 프로모션 -->
     <div class="sec" id="sec-price">
-      <div class="sec-title">시술 / 가격</div>
-      <div class="sec-desc">외국인 환자에게 보여줄 시술 목록을 관리합니다.</div>
+      <div class="sec-title">가격 / 프로모션</div>
+      <div class="sec-desc">프로모션 이벤트와 시술 가격을 관리합니다.</div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">🎁 프로모션</span>
+          <span class="card-hint">외국인 환자 대상 이벤트 가격 · 직접 수정 가능</span>
+        </div>
+        <table class="promo-tbl">
+          <thead>
+            <tr>
+              <th style="width:90px">카테고리</th>
+              <th>대표 시술명</th>
+              <th style="width:110px">이벤트 가격</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="promo-cat-tag">보톡스</span></td>
+              <td>V라인 턱보톡스</td>
+              <td class="promo-price">₩49,000</td>
+            </tr>
+            <tr>
+              <td><span class="promo-cat-tag">스킨부스터</span></td>
+              <td>리쥬란 스킨 리바이탈 프로그램</td>
+              <td class="promo-price">₩340,000</td>
+            </tr>
+            <tr>
+              <td><span class="promo-cat-tag">필러</span></td>
+              <td>프리미엄 볼륨 필러 1cc</td>
+              <td class="promo-price">₩279,000</td>
+            </tr>
+            <tr>
+              <td><span class="promo-cat-tag">콜라겐부스터</span></td>
+              <td>스컬트라 콜라겐 재생 프로그램</td>
+              <td class="promo-price">₩580,000</td>
+            </tr>
+            <tr>
+              <td><span class="promo-cat-tag">리프팅</span></td>
+              <td>울쎄라 프라임 리프팅 300샷</td>
+              <td class="promo-price">₩1,090,000</td>
+            </tr>
+          </tbody>
+        </table>
+        <button class="add-btn" style="margin-top:14px" onclick="toast('항목 추가는 실제 서비스에서 제공됩니다')">＋ 프로모션 항목 추가</button>
+      </div>
 
       <div class="card">
         <div class="card-title" style="margin-bottom:16px">가격 설정</div>
@@ -453,7 +506,6 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;b
         <div class="prod-list" id="prod-list">
           <!-- 시술 1: 리쥬란 힐러 -->
           <div class="prod-card">
-            <div class="prod-thumb has-img" title="이미지 변경"></div>
             <div class="prod-fields">
               <div class="field"><label>시술명</label><input type="text" value="Rejuran Healer 2cc"></div>
               <div class="field"><label>카테고리</label><select><option selected>스킨부스터</option><option>리프팅 / RF</option><option>보톡스</option><option>레이저</option></select></div>
@@ -465,7 +517,6 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;b
           </div>
           <!-- 시술 2: 울쎄라 -->
           <div class="prod-card">
-            <div class="prod-thumb has-img"></div>
             <div class="prod-fields">
               <div class="field"><label>시술명</label><input type="text" value="HIFU Ulthera 300 shots"></div>
               <div class="field"><label>카테고리</label><select><option>스킨부스터</option><option selected>리프팅 / RF</option><option>보톡스</option><option>레이저</option></select></div>
@@ -477,7 +528,6 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;b
           </div>
           <!-- 시술 3: 써마지 CPT -->
           <div class="prod-card">
-            <div class="prod-thumb has-img"></div>
             <div class="prod-fields">
               <div class="field"><label>시술명</label><input type="text" value="Thermage CPT Eye 75 shots"></div>
               <div class="field"><label>카테고리</label><select><option>스킨부스터</option><option selected>리프팅 / RF</option><option>보톡스</option><option>레이저</option></select></div>
@@ -489,7 +539,6 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;b
           </div>
           <!-- 시술 4: 피코 레이저 -->
           <div class="prod-card">
-            <div class="prod-thumb has-img"></div>
             <div class="prod-fields">
               <div class="field"><label>시술명</label><input type="text" value="Pico Toning Laser x3"></div>
               <div class="field"><label>카테고리</label><select><option>스킨부스터</option><option>리프팅 / RF</option><option>보톡스</option><option selected>레이저</option></select></div>
@@ -501,7 +550,6 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;b
           </div>
           <!-- 시술 5: 스킨보톡스 -->
           <div class="prod-card">
-            <div class="prod-thumb has-img"></div>
             <div class="prod-fields">
               <div class="field"><label>시술명</label><input type="text" value="Skin Botox Full Face"></div>
               <div class="field"><label>카테고리</label><select><option>스킨부스터</option><option>리프팅 / RF</option><option selected>보톡스</option><option>레이저</option></select></div>
@@ -597,7 +645,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;b
             <button class="doc-card-del" onclick="delDoc(this)" title="삭제">×</button>
           </div>
           <div class="doc-layout">
-            <div class="doc-photo-slot filled" onclick="toast('사진 업로드는 실제 서비스에서 제공됩니다')">
+            <div class="doc-photo-slot filled" style="background-image:url('images/6.jpg')" onclick="toast('사진 업로드는 실제 서비스에서 제공됩니다')">
             </div>
             <div>
               <div class="field"><label>이름 <span class="required">*</span></label><input type="text" id="f-doc-name" value="박지영 원장 (Dr. Park Jiyoung)" oninput="updateDocLabel(this)"></div>
@@ -666,9 +714,8 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;b
           <label>구글맵 URL</label>
           <input type="url" placeholder="https://maps.google.com/...">
         </div>
-        <div class="img-slot" style="height:120px;margin-top:8px" onclick="toast('지도 이미지 업로드는 실제 서비스에서 제공됩니다')">
-          <span style="font-size:28px">🗺</span>
-          <span style="font-size:12px;color:#AAA">지도 이미지 업로드 (선택)</span>
+        <div style="border-radius:10px;overflow:hidden;margin-top:8px;height:180px;border:1px solid var(--border)">
+          <iframe src="https://maps.google.com/maps?q=37.497942,127.027689&z=16&output=embed" width="100%" height="180" style="border:0;display:block" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
       </div>
     </div>
@@ -1196,7 +1243,6 @@ function addProd(){
   const card=document.createElement('div');
   card.className='prod-card';
   card.innerHTML=`
-    <div class="prod-thumb" onclick="toast('이미지 업로드는 실제 서비스에서 제공됩니다')"><span>＋</span></div>
     <div class="prod-fields">
       <div class="field"><label>시술명</label><input type="text" placeholder="시술명 입력"></div>
       <div class="field"><label>카테고리</label><select><option>스킨부스터</option><option>리프팅 / RF</option><option>보톡스</option><option>레이저</option></select></div>
